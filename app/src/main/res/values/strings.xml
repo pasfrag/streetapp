@@ -1,0 +1,10 @@
+<resources>
+  <string name="app_name">StreetApp</string>
+  <string name="age_hinder">Age</string>
+  <string name="username_hinder">Username</string>
+  <string name="password_hinder">Password</string>
+  <string name="email_hinder">E-mail</string>
+  <string name="login_button_text">Login</string>
+  <string name="link_to_register">Don &apos;t have an account.</string>
+  <string name="register_button_text">Register</string>
+</resources>

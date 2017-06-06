@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:orientation="vertical"
+  android:visibility="visible">
+
+  <EditText
+    android:id="@+id/usernameET"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:ems="10"
+    android:hint="@string/username_hinder"
+    android:inputType="textPersonName"/>
+
+  <EditText
+    android:id="@+id/emailET"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:ems="10"
+    android:hint="@string/email_hinder"
+    android:inputType="textEmailAddress"/>
+
+  <EditText
+    android:id="@+id/passwordET"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:ems="10"
+    android:hint="@string/password_hinder"
+    android:inputType="textPassword"/>
+
+  <EditText
+    android:id="@+id/ageET"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:ems="10"
+    android:hint="@string/age_hinder"
+    android:inputType="number"/>
+
+  <Button
+    android:id="@+id/registerBT"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="@string/register_button_text"/>
+</LinearLayout>
