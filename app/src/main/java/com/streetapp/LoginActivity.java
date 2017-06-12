@@ -1,4 +1,4 @@
-package com.streetapp.streetapp;
+package com.streetapp;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -25,7 +25,7 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
 
-            Intent registerIntent = new Intent(LoginActivity.this, RegisterActivity.class);
+            Intent registerIntent = new Intent(LoginActivity.this, com.streetapp.RegisterActivity.class);
             startActivity(registerIntent);
         }
       });

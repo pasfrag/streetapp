@@ -12,7 +12,22 @@
     android:layout_height="wrap_content"
     android:ems="10"
     android:hint="@string/username_hinder"
-    android:inputType="textPersonName"/>
+    android:inputType="text"/>
+
+  <EditText
+        android:id="@+id/firstnameET"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/first_name_hinder"
+        android:inputType="text"/>
+  <EditText
+        android:id="@+id/lastnameET"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/last_name_hinder"
+        android:inputType="text"/>
 
   <EditText
     android:id="@+id/emailET"
