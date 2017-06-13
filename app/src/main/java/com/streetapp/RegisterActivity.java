@@ -1,5 +1,6 @@
 package com.streetapp;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -37,20 +38,19 @@ public class RegisterActivity extends AppCompatActivity {
           @Override
           public void onClick(View view) {
 
-              Log.e("Easy1","Starts here");
-              final AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
+              //Log.e("Easy1","Starts here");
               final String username = usernameET.getText().toString();
-              Log.e("Easy1",username);
+              //Log.e("Easy1",username);
               final String firstName = firstNameET.getText().toString();
-              Log.e("Easy1", firstName);
+              //Log.e("Easy1", firstName);
               final String lastName = lastNameET.getText().toString();
-              Log.e("Easy1", lastName);
+              //Log.e("Easy1", lastName);
               final String password = passwordET.getText().toString();
-              Log.e("Easy1", password);
+              //Log.e("Easy1", password);
               final String email = emailET.getText().toString();
-              Log.e("Easy1",email);
+              //Log.e("Easy1",email);
               final int age = Integer.parseInt(ageET.getText().toString());
-              Log.e("Easy1",age + "");
+              //Log.e("Easy1",age + "");
 
               Response.Listener<String> responseListener = new Response.Listener<String>(){
 
@@ -58,32 +58,33 @@ public class RegisterActivity extends AppCompatActivity {
                   public void onResponse(String response) {
 
                       try {
+                          Log.e("Working good",response);
                           JSONObject jsonResponse = new JSONObject(response);
-                          Boolean success = jsonResponse.getBoolean("sucess");
+                          Boolean success = jsonResponse.getBoolean("success");
 
-                          Log.e("Easy", "IT 's ok but not really" + success);
                           if (success){
                               Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
                               RegisterActivity.this.startActivity(intent);
-                              Log.e("Easy", "IT 's ok but not really" + success);
                           }else {
 
-                              Log.e("Easy", "IT 's not ok at all: " + success);
-                              builder.setMessage("Register failed")
+                              AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
+                              builder.setMessage("This email is already in use. Try with another email.")
                                       .setNegativeButton("Retry", null)
                                       .create()
                                       .show();
+
+
                           }
                       } catch (JSONException e) {
                           e.printStackTrace();
                       }
 
                   }
+              };
+
+              Response.ErrorListener responseErrorListener = new Response.ErrorListener(){
+
                   public void onErrorResponse(VolleyError error) {
-                      // Handle your error types accordingly.For Timeout & No connection error, you can show 'retry' button.
-                      // For AuthFailure, you can re login with user credentials.
-                      // In this case you can check how client is forming the api and debug accordingly.
-                      // For ServerError 5xx, you can do retry or handle accordingly.
                       if( error instanceof NetworkError) {
                           Log.e("Volley Error", "Network error");
                       } else if( error instanceof ServerError) {
@@ -92,9 +93,9 @@ public class RegisterActivity extends AppCompatActivity {
                           Log.e("Volley Error", "Auth Failure Error");
                       } else if( error instanceof ParseError) {
                           Log.e("Volley Error", "Parse Error");
-                      } else if( error instanceof NoConnectionError) {
+                      } /*else if( error instanceof NoConnectionError) {
                           Log.e("Volley Error", "No Connection Error");
-                      } else if( error instanceof TimeoutError) {
+                      }*/ else if( error instanceof TimeoutError) {
                           Log.e("Volley Error", "Timeout Error");
                       }
 
@@ -102,8 +103,13 @@ public class RegisterActivity extends AppCompatActivity {
               };
 
               RegisterRequest registerRequest = new RegisterRequest(username, firstName, lastName,
-                            email, password, age, responseListener);
+                            email, password, age, responseListener, responseErrorListener);
               RequestQueue queue = Volley.newRequestQueue(RegisterActivity.this);
+
+              int socketTimeout = 30000;//30 seconds - change to what you want
+              RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+              registerRequest.setRetryPolicy(policy);
+
               queue.add(registerRequest);
 
           }
