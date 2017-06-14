@@ -11,14 +11,14 @@ import java.util.Map;
 
 public class LoginRequest extends StringRequest {
 
-    private static final String REGISTER_REQUEST_URL = "https://sapp.000webhostapp.com/register.php";
+    private static final String REGISTER_REQUEST_URL = "https://sapp.000webhostapp.com/login.php";
     private Map<String, String> params;
 
     public LoginRequest(String email, String password, Response.Listener<String> listener,
                         Response.ErrorListener errorListener){
 
         super(Method.POST, REGISTER_REQUEST_URL, listener, errorListener);
-        Log.e("Easy",username);
+        Log.e("Easy",email);
         params = new HashMap<>();
         params.put("email", email);
         params.put("password", password);
