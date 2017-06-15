@@ -18,7 +18,6 @@ public class LoginRequest extends StringRequest {
                         Response.ErrorListener errorListener){
 
         super(Method.POST, REGISTER_REQUEST_URL, listener, errorListener);
-        Log.e("Easy",email);
         params = new HashMap<>();
         params.put("email", email);
         params.put("password", password);
