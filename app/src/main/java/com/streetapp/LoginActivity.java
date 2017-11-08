@@ -27,96 +27,96 @@ import org.json.JSONObject;
 
 public class LoginActivity extends AppCompatActivity {
 
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
-      super.onCreate(savedInstanceState);
-      setContentView(R.layout.activity_login);
+  	@Override
+  	protected void onCreate(Bundle savedInstanceState) {
+      	super.onCreate(savedInstanceState);
+      	setContentView(R.layout.activity_login);
 
-      final EditText emailET = (EditText) findViewById(R.id.emailET);
-      final EditText passwordET = (EditText) findViewById(R.id.passwordET);
+      	final EditText emailET = (EditText) findViewById(R.id.emailET);
+      	final EditText passwordET = (EditText) findViewById(R.id.passwordET);
 
-      final Button loginBT = (Button) findViewById(R.id.loginBT);
-      final TextView registerLinkTV = (TextView) findViewById(R.id.register_linkTV);
+      	final Button loginBT = (Button) findViewById(R.id.loginBT);
+      	final TextView registerLinkTV = (TextView) findViewById(R.id.register_linkTV);
 
-      registerLinkTV.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
+      	registerLinkTV.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
 
-            Intent registerIntent = new Intent(LoginActivity.this, com.streetapp.RegisterActivity.class);
-            startActivity(registerIntent);
-        }
-      });
+				Intent registerIntent = new Intent(LoginActivity.this, com.streetapp.RegisterActivity.class);
+				startActivity(registerIntent);
+			}
+      	});
 
-      loginBT.setOnClickListener(new View.OnClickListener() {
-          @Override
-          public void onClick(View view) {
+      	loginBT.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
 
-              final String password = passwordET.getText().toString();
-              //Log.e("Easy1", password);
-              final String email = emailET.getText().toString();
-              //Log.e("Easy1",email);
+				final String password = passwordET.getText().toString();
+				//Log.e("Easy1", password);
+				final String email = emailET.getText().toString();
+				//Log.e("Easy1",email);
 
-              Response.Listener<String> responseListener = new Response.Listener<String>(){
+				Response.Listener<String> responseListener = new Response.Listener<String>(){
 
-                  @Override
-                  public void onResponse(String response) {
+					@Override
+					public void onResponse(String response) {
 
-                      try {
-                          Log.e("Working good",response);
-                          JSONObject jsonResponse = new JSONObject(response);
-                          Boolean success = jsonResponse.getBoolean("success");
+						try {
+							Log.e("Working good",response);
+							JSONObject jsonResponse = new JSONObject(response);
+							Boolean success = jsonResponse.getBoolean("success");
 
-                          if (success){
-                              Intent intent = new Intent(LoginActivity.this, UserAreaActivity.class);
-                              LoginActivity.this.startActivity(intent);
-                          }else {
+							if (success){
+								Intent intent = new Intent(LoginActivity.this, UserAreaActivity.class);
+								LoginActivity.this.startActivity(intent);
+							}else {
 
-                              AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
-                              builder.setMessage("There is no such user.")
-                                      .setNegativeButton("Retry", null)
-                                      .create()
-                                      .show();
+								AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+								builder.setMessage("There is no such user.")
+									  .setNegativeButton("Retry", null)
+									  .create()
+									  .show();
 
 
-                          }
-                      } catch (JSONException e) {
-                          e.printStackTrace();
-                      }
+							}
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
 
-                  }
-              };
+					}
+				};
 
-              Response.ErrorListener responseErrorListener = new Response.ErrorListener(){
+				Response.ErrorListener responseErrorListener = new Response.ErrorListener(){
 
-                  public void onErrorResponse(VolleyError error) {
-                      if( error instanceof NetworkError) {
-                          Log.e("Volley Error", "Network error");
-                      } else if( error instanceof ServerError) {
-                          Log.e("Volley Error", "Server Error");
-                      } else if( error instanceof AuthFailureError) {
-                          Log.e("Volley Error", "Auth Failure Error");
-                      } else if( error instanceof ParseError) {
-                          Log.e("Volley Error", "Parse Error");
-                      } /*else if( error instanceof NoConnectionError) {
-                          Log.e("Volley Error", "No Connection Error");
-                      }*/ else if( error instanceof TimeoutError) {
-                          Log.e("Volley Error", "Timeout Error");
-                      }
+					public void onErrorResponse(VolleyError error) {
+						if( error instanceof NetworkError) {
+							Log.e("Volley Error", "Network error");
+						} else if( error instanceof ServerError) {
+							Log.e("Volley Error", "Server Error");
+						} else if( error instanceof AuthFailureError) {
+							Log.e("Volley Error", "Auth Failure Error");
+						} else if( error instanceof ParseError) {
+							Log.e("Volley Error", "Parse Error");
+						} /*else if( error instanceof NoConnectionError) {
+							Log.e("Volley Error", "No Connection Error");
+						}*/ else if( error instanceof TimeoutError) {
+							Log.e("Volley Error", "Timeout Error");
+						}
 
-                  }
-              };
+					}
+				};
 
-              LoginRequest registerRequest = new LoginRequest( email, password, responseListener,
-                      responseErrorListener);
-              RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
+				LoginRequest registerRequest = new LoginRequest( email, password, responseListener,
+						  responseErrorListener);
+				RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
 
-              int socketTimeout = 30000;//30 seconds - change to what you want
-              RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
-              registerRequest.setRetryPolicy(policy);
+				int socketTimeout = 30000;//30 seconds - change to what you want
+				RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+				registerRequest.setRetryPolicy(policy);
 
-              queue.add(registerRequest);
+				queue.add(registerRequest);
 
-          }
-      });
-  }
+			}
+      	});
+  	}
 }

@@ -3,9 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$USER_HOME$/Επιφάνεια εργασίας/droid/app/app.iml" filepath="$USER_HOME$/Επιφάνεια εργασίας/droid/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/diploma.iml" filepath="$PROJECT_DIR$/diploma.iml" />
-      <module fileurl="file://$USER_HOME$/Επιφάνεια εργασίας/droid/droid.iml" filepath="$USER_HOME$/Επιφάνεια εργασίας/droid/droid.iml" />
     </modules>
   </component>
 </project>
