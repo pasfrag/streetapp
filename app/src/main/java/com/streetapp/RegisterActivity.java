@@ -1,5 +1,6 @@
 package com.streetapp;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -7,7 +8,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.android.volley.*;
 import com.android.volley.toolbox.Volley;
@@ -15,41 +19,99 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
+
 
 public class RegisterActivity extends AppCompatActivity {
 
-  	@Override
+	private static final String REGISTER_REQUEST_URL = "https://sapp.000webhostapp.com/signup.php";
+	private EditText usernameET,  emailET, passwordET, rePasswordET, birthdateET;
+	private TextView messageTV;
+	private Spinner categorySP;
+	private Calendar calendar;
+
+	private int category;
+	private String username, email, password, rePassword, birthDate;
+
+	private DatePickerDialog.OnDateSetListener date;
+
+	@Override
   	protected void onCreate(Bundle savedInstanceState) {
 	  	super.onCreate(savedInstanceState);
 	  	setContentView(R.layout.activity_register);
 
-	  	final EditText usernameET = (EditText) findViewById(R.id.usernameET);
-	  	final EditText firstNameET = (EditText) findViewById(R.id.firstnameET);
-	  	final EditText lastNameET = (EditText) findViewById(R.id.lastnameET);
-	  	final EditText emailET = (EditText) findViewById(R.id.emailET);
-	  	final EditText passwordET = (EditText) findViewById(R.id.passwordET);
-	  	final EditText ageET = (EditText) findViewById(R.id.ageET);
+		Intent intent = this.getIntent();
+		category = intent.getIntExtra("category" ,-1);
+		Log.e("Intentr category", category + "");
 
-	  	final Button registerBT = (Button) findViewById(R.id.registerBT);
+	  	usernameET = (EditText) findViewById(R.id.usernameET);
+	  	rePasswordET = (EditText) findViewById(R.id.re_passwordET);
+	  	emailET = (EditText) findViewById(R.id.emailET);
+	  	passwordET = (EditText) findViewById(R.id.passwordET);
+	  	birthdateET = (EditText) findViewById(R.id.ageET);
+		categorySP = (Spinner) findViewById(R.id.categorySP);
+		if (category == 0) {
+			categorySP.setVisibility(View.GONE);
+		}
+		messageTV = (TextView) findViewById(R.id.messageTV);
+
+		calendar = Calendar.getInstance();
+
+		date = new DatePickerDialog.OnDateSetListener() {
+			@Override
+			public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+
+				calendar.set(Calendar.YEAR, year);
+				calendar.set(Calendar.MONTH, month);
+				calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+				updateLabel();
+
+			}
+		};
+
+		final Button registerBT = (Button) findViewById(R.id.registerBT);
 
 
 	  	registerBT.setOnClickListener(new View.OnClickListener() {
 		  	@Override
 		  	public void onClick(View view) {
 
-			  	//Log.e("Easy1","Starts here");
-			  	final String username = usernameET.getText().toString();
-			  	//Log.e("Easy1",username);
-			  	final String firstName = firstNameET.getText().toString();
-			  	//Log.e("Easy1", firstName);
-			  	final String lastName = lastNameET.getText().toString();
-			  	//Log.e("Easy1", lastName);
-			  	final String password = passwordET.getText().toString();
-			  	//Log.e("Easy1", password);
-			  	final String email = emailET.getText().toString();
-			  	//Log.e("Easy1",email);
-			  	final int age = Integer.parseInt(ageET.getText().toString());
-			  	//Log.e("Easy1",age + "");
+			  	Log.e("Easy1","Starts here");
+			  	username = usernameET.getText().toString();
+			  	Log.e("Easy1",username);
+			  	rePassword = rePasswordET.getText().toString();
+			  	Log.e("Easy1", rePassword);
+			  	password = passwordET.getText().toString();
+			  	Log.e("Easy1", password);
+			  	email = emailET.getText().toString();
+			  	Log.e("Easy1",email);
+			  	birthDate = birthdateET.getText().toString();
+			  	Log.e("Easy1", birthDate);
+				if (category!=0){
+					int position = categorySP.getSelectedItemPosition();
+					String[] array = getResources().getStringArray(R.array.category_value_array);
+					category = Integer.parseInt(array[position]);
+				}
+
+				ArrayList<String> names = new ArrayList<String>();
+				names.add("username");
+				names.add("email");
+				names.add("password");
+				names.add("password2");
+				names.add("birthday");
+				names.add("category");
+
+				ArrayList<String> values = new ArrayList<String>();
+				values.add(username);
+				values.add(email);
+				values.add(password);
+				values.add(rePassword);
+				values.add(birthDate);
+				values.add(String.valueOf(category));
+
 
 			  	Response.Listener<String> responseListener = new Response.Listener<String>(){
 
@@ -57,21 +119,19 @@ public class RegisterActivity extends AppCompatActivity {
 				  	public void onResponse(String response) {
 
 					  	try {
+
+							messageTV.setVisibility(View.GONE);
 						  	Log.e("Working good",response);
 						  	JSONObject jsonResponse = new JSONObject(response);
-						  	Boolean success = jsonResponse.getBoolean("success");
+						  	int code = jsonResponse.getInt("code");
 
-						  	if (success){
+						  	if (code == 200){
 							  	Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
 							  	RegisterActivity.this.startActivity(intent);
 						  	}else {
 
-							  	AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
-							  	builder.setMessage("This email is already in use. Try with another email.")
-									  .setNegativeButton("Retry", null)
-									  .create()
-									  .show();
-
+								messageTV.setVisibility(View.VISIBLE);
+								messageTV.setText(jsonResponse.getString("message"));
 
 						  	}
 					  	} catch (JSONException e) {
@@ -101,12 +161,14 @@ public class RegisterActivity extends AppCompatActivity {
 				  	}
 			  	};
 
-			  	RegisterRequest registerRequest = new RegisterRequest(username, firstName, lastName,
-							email, password, age, responseListener, responseErrorListener);
+			  	HttpRequest registerRequest = new HttpRequest(REGISTER_REQUEST_URL, responseListener,
+						responseErrorListener, names, values);
 			  	RequestQueue queue = Volley.newRequestQueue(RegisterActivity.this);
 
-			  	int socketTimeout = 30000;//30 seconds - change to what you want
-			  	RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+			  	int socketTimeout = 30000;
+			  	RetryPolicy policy = new DefaultRetryPolicy(socketTimeout,
+						DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+						DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
 			  	registerRequest.setRetryPolicy(policy);
 
 			  	queue.add(registerRequest);
@@ -114,4 +176,18 @@ public class RegisterActivity extends AppCompatActivity {
 		  	}
 	  	});
   	}
+
+  	public void getBirthDate(View view){
+
+		new DatePickerDialog(RegisterActivity.this, date, calendar.get(Calendar.YEAR),
+				calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+
+	}
+
+	private void updateLabel() {
+		String myFormat = "yyyy-MM-dd"; //In which you need put here
+		SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+
+		birthdateET.setText(sdf.format(calendar.getTime()));
+	}
 }

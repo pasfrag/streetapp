@@ -1,7 +1,6 @@
 package com.streetapp;
 
 import android.content.Intent;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,29 +24,27 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 public class LoginActivity extends AppCompatActivity {
+
+	private static final String LOGIN_REQUEST_URL = "https://sapp.000webhostapp.com/login.php";
+	private TextView messageTV;
+	private EditText emailET, passwordET;
 
   	@Override
   	protected void onCreate(Bundle savedInstanceState) {
       	super.onCreate(savedInstanceState);
       	setContentView(R.layout.activity_login);
 
-      	final EditText emailET = (EditText) findViewById(R.id.emailET);
-      	final EditText passwordET = (EditText) findViewById(R.id.passwordET);
+      	emailET = (EditText) findViewById(R.id.emailET);
+      	passwordET = (EditText) findViewById(R.id.passwordET);
 
       	final Button loginBT = (Button) findViewById(R.id.loginBT);
       	final TextView registerLinkTV = (TextView) findViewById(R.id.register_linkTV);
+		messageTV = (TextView) findViewById(R.id.display_messageTV);
 
-      	registerLinkTV.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-
-				Intent registerIntent = new Intent(LoginActivity.this, com.streetapp.RegisterActivity.class);
-				startActivity(registerIntent);
-			}
-      	});
-
-      	loginBT.setOnClickListener(new View.OnClickListener() {
+		loginBT.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
 
@@ -56,27 +53,32 @@ public class LoginActivity extends AppCompatActivity {
 				final String email = emailET.getText().toString();
 				//Log.e("Easy1",email);
 
+				ArrayList<String> names = new ArrayList<String>();
+				names.add("email");
+				names.add("password");
+
+				ArrayList<String> values = new ArrayList<String>();
+				values.add(email);
+				values.add(password);
+
 				Response.Listener<String> responseListener = new Response.Listener<String>(){
 
 					@Override
 					public void onResponse(String response) {
 
 						try {
+							messageTV.setVisibility(View.GONE);
 							Log.e("Working good",response);
 							JSONObject jsonResponse = new JSONObject(response);
-							Boolean success = jsonResponse.getBoolean("success");
+							int code = jsonResponse.getInt("code");
 
-							if (success){
+							if (code == 200){
 								Intent intent = new Intent(LoginActivity.this, UserAreaActivity.class);
 								LoginActivity.this.startActivity(intent);
 							}else {
 
-								AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
-								builder.setMessage("There is no such user.")
-									  .setNegativeButton("Retry", null)
-									  .create()
-									  .show();
-
+								messageTV.setVisibility(View.VISIBLE);
+								messageTV.setText(jsonResponse.getString("message"));
 
 							}
 						} catch (JSONException e) {
@@ -106,11 +108,11 @@ public class LoginActivity extends AppCompatActivity {
 					}
 				};
 
-				LoginRequest registerRequest = new LoginRequest( email, password, responseListener,
-						  responseErrorListener);
+				HttpRequest registerRequest = new HttpRequest( LOGIN_REQUEST_URL , responseListener,
+						  responseErrorListener, names, values);
 				RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
 
-				int socketTimeout = 30000;//30 seconds - change to what you want
+				int socketTimeout = 60000;//30 seconds - change to what you want
 				RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
 				registerRequest.setRetryPolicy(policy);
 
@@ -119,4 +121,20 @@ public class LoginActivity extends AppCompatActivity {
 			}
       	});
   	}
+
+  	public void registerClick(View view){
+		int category = -1;
+		if (view.getId() == R.id.register_link_userTV){
+			category = 0;
+		}
+		else if (view.getId() == R.id.register_link_artistTV){
+			category = -1;
+		}
+
+		Intent registerIntent = new Intent(LoginActivity.this, com.streetapp.RegisterActivity.class);
+		registerIntent.putExtra("category", category);
+		startActivity(registerIntent);
+
+	}
+
 }

@@ -6,56 +6,64 @@
   android:orientation="vertical"
   android:visibility="visible">
 
-  <EditText
-    android:id="@+id/usernameET"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:ems="10"
-    android:hint="@string/username_hinder"
-    android:inputType="text"/>
-
-  <EditText
-        android:id="@+id/firstnameET"
+    <TextView
+        android:id="@+id/messageTV"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="@string/first_name_hinder"
-        android:inputType="text"/>
-  <EditText
-        android:id="@+id/lastnameET"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="@string/last_name_hinder"
-        android:inputType="text"/>
+        android:visibility="gone"/>
 
   <EditText
-    android:id="@+id/emailET"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:ems="10"
-    android:hint="@string/email_hinder"
-    android:inputType="textEmailAddress"/>
+      android:id="@+id/emailET"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:ems="10"
+      android:hint="@string/email_hinder"
+      android:inputType="textEmailAddress"/>
 
   <EditText
-    android:id="@+id/passwordET"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:ems="10"
-    android:hint="@string/password_hinder"
-    android:inputType="textPassword"/>
+      android:id="@+id/usernameET"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:ems="10"
+      android:hint="@string/username_hinder"
+      android:inputType="text"/>
 
   <EditText
-    android:id="@+id/ageET"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:ems="10"
-    android:hint="@string/age_hinder"
-    android:inputType="number"/>
+      android:id="@+id/passwordET"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:ems="10"
+      android:hint="@string/password_hinder"
+      android:inputType="textPassword"/>
+
+  <EditText
+      android:id="@+id/re_passwordET"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:ems="10"
+      android:hint="@string/re_password_hinder"
+      android:inputType="textPassword"/>
+
+  <EditText
+      android:id="@+id/ageET"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:ems="10"
+      android:hint="@string/age_hinder"
+      android:onClick="getBirthDate"
+      android:clickable="true"
+      android:focusable="false"
+      android:inputType="text"/>
+
+  <Spinner
+      android:id="@+id/categorySP"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:entries="@array/category_name_array"/>
 
   <Button
-    android:id="@+id/registerBT"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="@string/register_button_text"/>
+      android:id="@+id/registerBT"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="@string/register_button_text"/>
 </LinearLayout>
