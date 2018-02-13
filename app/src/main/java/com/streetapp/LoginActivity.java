@@ -1,11 +1,12 @@
 package com.streetapp;
 
+import android.app.Activity;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -27,7 +28,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends Activity {
 
 	private static final String LOGIN_REQUEST_URL = "https://sapp.000webhostapp.com/login.php";
 	private TextView messageTV;
@@ -44,7 +45,6 @@ public class LoginActivity extends AppCompatActivity {
       	passwordET = (EditText) findViewById(R.id.passwordET);
 
       	final Button loginBT = (Button) findViewById(R.id.loginBT);
-      	final TextView registerLinkTV = (TextView) findViewById(R.id.register_linkTV);
 		messageTV = (TextView) findViewById(R.id.display_messageTV);
 
 		loginBT.setOnClickListener(new View.OnClickListener() {
@@ -56,11 +56,11 @@ public class LoginActivity extends AppCompatActivity {
 				final String email = emailET.getText().toString();
 				//Log.e("Easy1",email);
 
-				ArrayList<String> names = new ArrayList<String>();
+				ArrayList<String> names = new ArrayList<>();
 				names.add("email");
 				names.add("password");
 
-				ArrayList<String> values = new ArrayList<String>();
+				ArrayList<String> values = new ArrayList<>();
 				values.add(email);
 				values.add(password);
 
@@ -126,16 +126,8 @@ public class LoginActivity extends AppCompatActivity {
   	}
 
   	public void registerClick(View view){
-		int category = -1;
-		if (view.getId() == R.id.register_link_userTV){
-			category = 0;
-		}
-		else if (view.getId() == R.id.register_link_artistTV){
-			category = -1;
-		}
 
 		Intent registerIntent = new Intent(LoginActivity.this, com.streetapp.RegisterActivity.class);
-		registerIntent.putExtra("category", category);
 		startActivity(registerIntent);
 
 	}

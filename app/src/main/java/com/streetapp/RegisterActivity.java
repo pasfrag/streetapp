@@ -22,6 +22,7 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 
@@ -43,19 +44,12 @@ public class RegisterActivity extends AppCompatActivity {
 	  	super.onCreate(savedInstanceState);
 	  	setContentView(R.layout.activity_register);
 
-		Intent intent = this.getIntent();
-		category = intent.getIntExtra("category" ,-1);
-		Log.e("Intentr category", category + "");
-
 	  	usernameET = (EditText) findViewById(R.id.usernameET);
 	  	rePasswordET = (EditText) findViewById(R.id.re_passwordET);
 	  	emailET = (EditText) findViewById(R.id.emailET);
 	  	passwordET = (EditText) findViewById(R.id.passwordET);
 	  	birthdateET = (EditText) findViewById(R.id.ageET);
 		categorySP = (Spinner) findViewById(R.id.categorySP);
-		if (category == 0) {
-			categorySP.setVisibility(View.GONE);
-		}
 		messageTV = (TextView) findViewById(R.id.messageTV);
 
 		calendar = Calendar.getInstance();
@@ -90,11 +84,13 @@ public class RegisterActivity extends AppCompatActivity {
 			  	Log.e("Easy1",email);
 			  	birthDate = birthdateET.getText().toString();
 			  	Log.e("Easy1", birthDate);
-				if (category!=0){
+				//if (category!=0){
 					int position = categorySP.getSelectedItemPosition();
+					Log.e("Category", String.valueOf(position));
 					String[] array = getResources().getStringArray(R.array.category_value_array);
 					category = Integer.parseInt(array[position]);
-				}
+					category--;
+				//}
 
 				ArrayList<String> names = new ArrayList<String>();
 				names.add("username");
@@ -179,8 +175,13 @@ public class RegisterActivity extends AppCompatActivity {
 
   	public void getBirthDate(View view){
 
-		new DatePickerDialog(RegisterActivity.this, date, calendar.get(Calendar.YEAR),
-				calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.YEAR, -12);
+		Date min18 = calendar.getTime();
+		DatePickerDialog dialog = new DatePickerDialog(RegisterActivity.this, date, calendar.get(Calendar.YEAR),
+				calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+		dialog.getDatePicker().setMaxDate(min18.getTime());
+		dialog.show();
 
 	}
 

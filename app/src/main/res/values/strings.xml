@@ -12,6 +12,7 @@
 
     <string-array name="category_name_array">
         <item>-Choose-</item>
+        <item>Street Fan</item>
         <item>Painter</item>
         <item>Musician</item>
         <item>Graffiti</item>
@@ -20,7 +21,6 @@
         <item>Street Food</item>
         <item>Parkour</item>
         <item>Juggler</item>
-        <item></item>
         <item></item>
     </string-array>
 

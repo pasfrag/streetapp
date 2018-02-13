@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="@drawable/bg2nologo2">
 
     <EditText
         android:id="@+id/emailET"
+        android:inputType="textEmailAddress"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="28dp"
         android:background="#1000"
+        android:drawableStart="@drawable/ic_action_email"
         android:drawableLeft="@drawable/ic_action_email"
         android:ems="10"
         android:hint="@string/email_hinder"
@@ -27,13 +27,14 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="45dp"
         android:background="#1000"
-        android:drawableLeft="@drawable/ic_action_pass"
+        android:drawableStart="@drawable/ic_action_pass"
         android:ems="10"
         android:hint="@string/password_hinder"
         android:inputType="textPassword"
         android:textColor="#eee"
         android:layout_above="@+id/loginBT"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:drawableLeft="@drawable/ic_action_pass"/>
 
     <Button
         android:id="@+id/loginBT"
@@ -71,8 +72,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:gravity="center_horizontal"
-        >
+        android:gravity="center_horizontal">
 
         <TextView
             android:id="@+id/register_link_userTV"
@@ -100,7 +100,6 @@
         android:layout_above="@+id/register_linkTV"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="55dp"
-        android:text="TextView"
         android:textColor="@android:color/background_light"
         android:visibility="gone" />
 
@@ -108,10 +107,11 @@
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/logopink"
+        android:src="@drawable/logopink"
         android:layout_alignBottom="@+id/emailET"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:contentDescription="logo"/>
 
 </RelativeLayout>
 
