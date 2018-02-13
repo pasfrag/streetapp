@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:orientation="vertical"
   android:visibility="visible"
-    android:background="@drawable/bg2nologo">
+    android:background="@drawable/bg2nologo2">
 
     <TextView
         android:id="@+id/messageTV"
@@ -14,57 +15,97 @@
         android:visibility="gone"/>
 
   <EditText
-      android:id="@+id/emailET"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:ems="10"
-      android:hint="@string/email_hinder"
-      android:inputType="textEmailAddress"/>
-
-  <EditText
       android:id="@+id/usernameET"
-      android:layout_width="match_parent"
+      android:layout_width="250dp"
       android:layout_height="wrap_content"
       android:ems="10"
       android:hint="@string/username_hinder"
-      android:inputType="text"/>
+      android:inputType="text"
+      android:layout_above="@+id/emailET"
+      android:layout_alignLeft="@+id/emailET"
+      android:layout_alignStart="@+id/emailET"
+      android:layout_marginBottom="13dp" />
 
   <EditText
       android:id="@+id/passwordET"
-      android:layout_width="match_parent"
+      android:layout_width="250dp"
       android:layout_height="wrap_content"
+      android:layout_marginBottom="13dp"
       android:ems="10"
       android:hint="@string/password_hinder"
-      android:inputType="textPassword"/>
+      android:inputType="textPassword"
+      android:layout_above="@+id/re_passwordET"
+      android:layout_alignLeft="@+id/re_passwordET"
+      android:layout_alignStart="@+id/re_passwordET" />
 
   <EditText
       android:id="@+id/re_passwordET"
-      android:layout_width="match_parent"
+      android:layout_width="250dp"
       android:layout_height="wrap_content"
       android:ems="10"
       android:hint="@string/re_password_hinder"
-      android:inputType="textPassword"/>
+      android:inputType="textPassword"
+      android:layout_above="@+id/ageET"
+      android:layout_alignLeft="@+id/ageET"
+      android:layout_alignStart="@+id/ageET"
+      android:layout_marginBottom="7dp" />
 
   <EditText
       android:id="@+id/ageET"
-      android:layout_width="match_parent"
+      android:layout_width="250dp"
       android:layout_height="wrap_content"
-      android:ems="10"
-      android:hint="@string/age_hinder"
-      android:onClick="getBirthDate"
       android:clickable="true"
+      android:ems="10"
       android:focusable="false"
-      android:inputType="text"/>
+      android:hint="@string/age_hinder"
+      android:inputType="text"
+      android:onClick="getBirthDate"
+      android:layout_above="@+id/categorySP"
+      android:layout_alignLeft="@+id/categorySP"
+      android:layout_alignStart="@+id/categorySP"
+      android:layout_marginBottom="21dp" />
 
   <Spinner
       android:id="@+id/categorySP"
-      android:layout_width="match_parent"
+      android:layout_width="250dp"
       android:layout_height="wrap_content"
-      android:entries="@array/category_name_array"/>
+      android:layout_marginBottom="22dp"
+      android:entries="@array/category_name_array"
+      android:layout_above="@+id/registerBT"
+      android:layout_alignLeft="@+id/registerBT"
+      android:layout_alignStart="@+id/registerBT" />
 
   <Button
       android:id="@+id/registerBT"
-      android:layout_width="match_parent"
+      android:layout_width="250dp"
       android:layout_height="wrap_content"
-      android:text="@string/register_button_text"/>
-</LinearLayout>
+      android:layout_alignParentBottom="true"
+      android:layout_centerHorizontal="true"
+      android:layout_marginBottom="110dp"
+      android:background="@android:color/holo_blue_light"
+      android:text="@string/register_button_text" />
+
+  <EditText
+      android:id="@+id/emailET"
+      android:layout_width="250dp"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="11dp"
+      android:ems="10"
+      android:hint="@string/email_hinder"
+      android:inputType="textEmailAddress"
+      android:layout_above="@+id/passwordET"
+      android:layout_alignLeft="@+id/passwordET"
+      android:layout_alignStart="@+id/passwordET" />
+
+  <ImageView
+      android:id="@+id/imageView2"
+      android:layout_width="100dp"
+      android:layout_height="400dp"
+      app:srcCompat="@drawable/logopink"
+      android:layout_marginTop="26dp"
+      android:layout_below="@+id/categorySP"
+      android:layout_alignLeft="@+id/registerBT"
+      android:layout_alignStart="@+id/registerBT"
+      android:layout_alignRight="@+id/registerBT"
+      android:layout_alignEnd="@+id/registerBT" />
+</RelativeLayout>

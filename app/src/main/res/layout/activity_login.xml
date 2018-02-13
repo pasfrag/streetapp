@@ -5,11 +5,11 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="@drawable/bg2nologo">
+    android:background="@drawable/bg2nologo2">
 
     <EditText
         android:id="@+id/emailET"
-        android:layout_width="200dp"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="28dp"
         android:background="#1000"
@@ -23,9 +23,9 @@
 
     <EditText
         android:id="@+id/passwordET"
-        android:layout_width="200dp"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="47dp"
+        android:layout_marginBottom="45dp"
         android:background="#1000"
         android:drawableLeft="@drawable/ic_action_pass"
         android:ems="10"
@@ -40,7 +40,7 @@
         android:layout_width="130dp"
         android:layout_height="60dp"
         android:layout_gravity="center"
-        android:layout_marginBottom="60dp"
+        android:layout_marginBottom="86dp"
         android:background="@android:color/holo_blue_light"
         android:padding="20dp"
         android:text="@string/login_button_text"
@@ -109,10 +109,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/logopink"
-        android:layout_marginBottom="26dp"
-        android:layout_above="@+id/emailET"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignBottom="@+id/emailET"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>
 
