@@ -1,13 +1,15 @@
 package com.streetapp;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -33,6 +35,7 @@ public class LoginActivity extends Activity {
 	private static final String LOGIN_REQUEST_URL = "https://sapp.000webhostapp.com/login.php";
 	private TextView messageTV;
 	private EditText emailET, passwordET;
+	private CheckBox rememberCB;
 
   	@Override
   	protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +46,9 @@ public class LoginActivity extends Activity {
 
       	emailET = (EditText) findViewById(R.id.emailET);
       	passwordET = (EditText) findViewById(R.id.passwordET);
+      	rememberCB = (CheckBox) findViewById(R.id.rememberme);
 
-      	final Button loginBT = (Button) findViewById(R.id.loginBT);
+		final Button loginBT = (Button) findViewById(R.id.loginBT);
 		messageTV = (TextView) findViewById(R.id.display_messageTV);
 
 		loginBT.setOnClickListener(new View.OnClickListener() {
@@ -52,10 +56,19 @@ public class LoginActivity extends Activity {
 			public void onClick(View view) {
 
 				final String password = passwordET.getText().toString();
-				//Log.e("Easy1", password);
+				boolean flag = true;
+				if (password.equals("")){
+					passwordET.setError("This field cannot be blank!");
+					flag = false;
+				}
 				final String email = emailET.getText().toString();
-				//Log.e("Easy1",email);
+				if (email.equals("")){
+					emailET.setError("This field cannot be blank!");
+				}
 
+				if (!flag){
+					return;
+				}
 				ArrayList<String> names = new ArrayList<>();
 				names.add("email");
 				names.add("password");
@@ -63,6 +76,11 @@ public class LoginActivity extends Activity {
 				ArrayList<String> values = new ArrayList<>();
 				values.add(email);
 				values.add(password);
+
+				if (rememberCB.isChecked()){
+					names.add("rememberme");
+					values.add("checked");
+				}
 
 				Response.Listener<String> responseListener = new Response.Listener<String>(){
 
@@ -76,6 +94,18 @@ public class LoginActivity extends Activity {
 							int code = jsonResponse.getInt("code");
 
 							if (code == 200){
+
+								Boolean flag = jsonResponse.getBoolean("rememberme_exists");
+
+								if (flag) {
+									SharedPreferences preferences = LoginActivity.this.getSharedPreferences("auth", Context.MODE_PRIVATE);
+									SharedPreferences.Editor editor = preferences.edit();
+
+									String auth = jsonResponse.getString("auth");
+									editor.putString("remember_me_auth", auth);
+									editor.apply();
+								}
+
 								Intent intent = new Intent(LoginActivity.this, UserAreaActivity.class);
 								LoginActivity.this.startActivity(intent);
 							}else {
