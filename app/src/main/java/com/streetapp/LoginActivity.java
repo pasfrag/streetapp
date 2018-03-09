@@ -64,6 +64,7 @@ public class LoginActivity extends Activity {
 				final String email = emailET.getText().toString();
 				if (email.equals("")){
 					emailET.setError("This field cannot be blank!");
+                    flag = false;
 				}
 
 				if (!flag){
