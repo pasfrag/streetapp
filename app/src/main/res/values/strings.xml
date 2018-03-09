@@ -5,7 +5,7 @@
     <string name="password_hinder">Password</string>
     <string name="email_hinder">E-mail</string>
     <string name="login_button_text">Login</string>
-    <string name="link_to_register">Don \'t have an account? Register as:</string>
+    <string name="link_to_register">Don \'t have an account?</string>
     <string name="register_button_text">Register</string>
     <string name="re_password_hinder">Confirm Password</string>
     <string name="last_name_hinder">Last Name</string>
