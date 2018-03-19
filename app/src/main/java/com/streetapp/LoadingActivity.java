@@ -27,11 +27,16 @@ public class LoadingActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_loading);
 
+		InternetConnectivityTools tools = new InternetConnectivityTools(this);
+		if (!tools.isOnline()){
+			Intent intent = new Intent(LoadingActivity.this, LoginActivity.class);
+			LoadingActivity.this.startActivity(intent);
+		}
+
 		final SharedPreferences preferences = this.getSharedPreferences("auth", Context.MODE_PRIVATE);
 		String auth = preferences.getString("remember_me_auth", "0");
 		ArrayList<String> names = new ArrayList<String>();
 		names.add("rememberme");
-
 		ArrayList<String> values = new ArrayList<String>();
 		values.add(auth);
 
