@@ -91,6 +91,36 @@ public class RegisterActivity extends AppCompatActivity {
 					category = Integer.parseInt(array[position]);
 					category--;
 				//}
+                final String password = passwordET.getText().toString();
+                boolean flag = true;
+                if (password.equals("")) {
+                    passwordET.setError("This field cannot be blank!");
+                    flag = false;
+                }
+                final String email = emailET.getText().toString();
+                if (email.equals("")) {
+                    emailET.setError("This field cannot be blank!");
+                    flag = false;
+                }
+                final String rePassword = rePasswordET.getText().toString();
+                if (password.equals("")) {
+                    rePasswordET.setError("This field cannot be blank!");
+                    flag = false;
+                }
+                final String birthDate = birthdateET.getText().toString();
+                if (birthDate.equals("")) {
+                    birthdateET.setError("This field cannot be blank!");
+                    flag = false;
+                }
+                final String username = usernameET.getText().toString();
+                if (birthDate.equals("")) {
+                    usernameET.setError("This field cannot be blank!");
+                    flag = false;
+                }
+
+                if (!flag) {
+                    return;
+                }
 
 				ArrayList<String> names = new ArrayList<String>();
 				names.add("username");
