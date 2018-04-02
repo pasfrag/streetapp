@@ -1,5 +1,8 @@
 package com.streetapp;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.design.widget.NavigationView;
@@ -14,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 public class UserAreaActivity extends AppCompatActivity {
 
 	private DrawerLayout drawerLayout;
+	private NavigationView navigationView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -29,17 +33,31 @@ public class UserAreaActivity extends AppCompatActivity {
 
 		drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-		NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+		navigationView = (NavigationView) findViewById(R.id.nav_view);
+		navigationView.getMenu().getItem(0).setChecked(true);
+
 		navigationView.setNavigationItemSelectedListener(
 				new NavigationView.OnNavigationItemSelectedListener() {
 					@Override
 					public boolean onNavigationItemSelected(MenuItem menuItem) {
+
+						//uncheck menu items
+						uncheckMenuItems();
 						// set item as selected to persist highlight
 						menuItem.setChecked(true);
 						// close drawer when item is tapped
+
 						drawerLayout.closeDrawers();
 
 						// Add code here to update the UI based on the item selected
+						if (menuItem.getItemId() == R.id.logout){
+							SharedPreferences preferences = UserAreaActivity.this.getSharedPreferences("auth", Context.MODE_PRIVATE);
+							SharedPreferences.Editor editor = preferences.edit();
+							editor.putString("remember_me_auth", "");
+							editor.apply();
+							Intent intent = new Intent(UserAreaActivity.this, LoginActivity.class);
+							UserAreaActivity.this.startActivity(intent);
+						}
 						// For example, swap UI fragments here
 
 						return true;
@@ -82,5 +100,12 @@ public class UserAreaActivity extends AppCompatActivity {
 		}
 		return super.onOptionsItemSelected(item);
 
+	}
+
+	public void uncheckMenuItems(){
+		int size = navigationView.getMenu().size();
+		for (int i = 0; i < size; i++) {
+			navigationView.getMenu().getItem(i).setChecked(false);
+		}
 	}
 }
