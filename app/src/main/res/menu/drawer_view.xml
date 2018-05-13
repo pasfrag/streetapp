@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group>
         <item
-            android:id="@+id/nav_camera"
+            android:id="@+id/start_page"
             android:icon="@drawable/ic_action_email"
             android:title="Main Page"/>
 
@@ -10,6 +10,22 @@
             android:id="@+id/profile"
             android:title="Profile"
             android:icon="@drawable/ic_action_email"/>
+
+        <item
+            android:id="@+id/map_page"
+            android:title="Close me"
+            android:icon="@drawable/ic_action_email"/>
+
+        <item
+            android:id="@+id/about_page"
+            android:title="About Sapp"
+            android:icon="@drawable/ic_action_email"/>
+
+        <item
+            android:id="@+id/settings_page"
+            android:title="Settings"
+            android:icon="@drawable/ic_action_email"
+            android:checkable="false"/>
 
         <item
             android:id="@+id/logout"

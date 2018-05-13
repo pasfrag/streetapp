@@ -3,6 +3,8 @@ package com.streetapp;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.design.widget.NavigationView;
@@ -46,20 +48,60 @@ public class UserAreaActivity extends AppCompatActivity {
 						// set item as selected to persist highlight
 						menuItem.setChecked(true);
 						// close drawer when item is tapped
-
 						drawerLayout.closeDrawers();
 
 						// Add code here to update the UI based on the item selected
-						if (menuItem.getItemId() == R.id.logout){
+						android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+						FragmentTransaction transaction = fragmentManager.beginTransaction();
+						Fragment fragment;
+
+						switch (menuItem.getItemId()){
+							case R.id.logout:
+								SharedPreferences preferences = UserAreaActivity.this.getSharedPreferences("auth", Context.MODE_PRIVATE);
+								SharedPreferences.Editor editor = preferences.edit();
+								editor.putString("remember_me_auth", "");
+								editor.apply();
+								Intent intent = new Intent(UserAreaActivity.this, LoginActivity.class);
+								UserAreaActivity.this.startActivity(intent);
+								break;
+							case R.id.profile:
+								fragment = new ProfileFragment();
+								transaction
+										.replace(R.id.fragment_container, fragment)
+										.addToBackStack(null)
+										.commit();
+								return true;
+							case R.id.start_page:
+								fragment = new StartPageFragment();
+								transaction
+										.replace(R.id.fragment_container, fragment)
+										.addToBackStack(null)
+										.commit();
+								return true;
+							case R.id.map_page:
+								fragment = new CloseMapFragment();
+								transaction
+										.replace(R.id.fragment_container, fragment)
+										.addToBackStack(null)
+										.commit();
+								return true;
+							case R.id.about_page:
+								fragment = new AboutSappFragment();
+								transaction
+										.replace(R.id.fragment_container, fragment)
+										.addToBackStack(null)
+										.commit();
+								return true;
+						}
+						/*if (menuItem.getItemId() == R.id.logout){
 							SharedPreferences preferences = UserAreaActivity.this.getSharedPreferences("auth", Context.MODE_PRIVATE);
 							SharedPreferences.Editor editor = preferences.edit();
 							editor.putString("remember_me_auth", "");
 							editor.apply();
 							Intent intent = new Intent(UserAreaActivity.this, LoginActivity.class);
 							UserAreaActivity.this.startActivity(intent);
-						}
+						}*/
 						// For example, swap UI fragments here
-
 						return true;
 					}
 				}
@@ -88,6 +130,14 @@ public class UserAreaActivity extends AppCompatActivity {
 					}
 				}
 		);
+
+		android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+		FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+		StartPageFragment startPageFragment = new StartPageFragment();
+		transaction
+				.add(R.id.fragment_container, startPageFragment)
+				.commit();
 
 	}
 
