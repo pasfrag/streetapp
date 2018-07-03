@@ -3,33 +3,33 @@
     <group>
         <item
             android:id="@+id/start_page"
-            android:icon="@drawable/ic_action_email"
+            android:icon="@drawable/ic_home_black_24dp"
             android:title="Main Page"/>
 
         <item
             android:id="@+id/profile"
-            android:title="Profile"
-            android:icon="@drawable/ic_action_email"/>
+            android:title="Profil"
+            android:icon="@drawable/ic_person_black_24dp"/>
 
         <item
             android:id="@+id/map_page"
             android:title="Close me"
-            android:icon="@drawable/ic_action_email"/>
+            android:icon="@drawable/ic_place_black_24dp"/>
 
         <item
             android:id="@+id/about_page"
             android:title="About Sapp"
-            android:icon="@drawable/ic_action_email"/>
+            android:icon="@drawable/ic_info_outline_black_24dp"/>
 
         <item
             android:id="@+id/settings_page"
             android:title="Settings"
-            android:icon="@drawable/ic_action_email"
+            android:icon="@drawable/ic_settings_black_24dp"
             android:checkable="false"/>
 
         <item
             android:id="@+id/logout"
-            android:icon="@drawable/ic_action_email"
+            android:icon="@drawable/ic_exit_to_app_black_24dp"
             android:title="Log out"/>
     </group>
 </menu>
