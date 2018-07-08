@@ -46,11 +46,12 @@
         android:id="@+id/rememberme"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Remember me"
-        android:layout_below="@+id/emailET"
         android:layout_alignLeft="@+id/passwordET"
         android:layout_alignStart="@+id/passwordET"
-        android:layout_marginTop="31dp" />
+        android:layout_below="@+id/emailET"
+        android:layout_marginTop="31dp"
+        android:text="Remember me"
+        android:textSize="18sp" />
 
     <Button
         android:id="@+id/loginBT"
@@ -67,15 +68,15 @@
 
     <TextView
         android:id="@+id/register_linkTV"
-        android:layout_width="match_parent"
+        android:layout_width="327dp"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/linearLayout"
-        android:layout_alignEnd="@+id/register_link_artistTV"
 
-        android:layout_alignRight="@+id/register_link_artistTV"
+        android:layout_above="@+id/linearLayout"
+        android:layout_alignParentStart="true"
         android:gravity="center_horizontal"
         android:text="@string/link_to_register"
-        android:textColor="@android:color/darker_gray" />
+        android:textColor="@android:color/darker_gray"
+        android:textSize="18sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -117,12 +118,13 @@
         android:layout_width="75dp"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/linearLayout"
-        android:layout_alignEnd="@+id/passwordET"
-        android:layout_alignRight="@+id/passwordET"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="40dp"
         android:layout_weight="0.06"
         android:onClick="registerClick"
         android:text="Register"
-        android:textColor="?attr/colorControlNormal" />
+        android:textColor="attr/colorControlNormal"
+        android:textSize="18sp" />
 
 </RelativeLayout>
 
