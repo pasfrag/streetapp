@@ -108,4 +108,5 @@
       android:layout_alignStart="@+id/registerBT"
       android:layout_alignRight="@+id/registerBT"
       android:layout_alignEnd="@+id/registerBT" />
+
 </RelativeLayout>

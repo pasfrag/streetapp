@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#ddd"
-    android:alpha="0.95">
+    android:alpha="0.95"
+    android:background="@android:color/background_light"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/posttime"
@@ -17,9 +16,9 @@
         android:text="8/7/2018 at 19:04" />
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/postcomandphoto"
@@ -28,8 +27,7 @@
             android:layout_weight="0.25"
             android:text="Jakis has just shared a new photo!"
             android:textColor="@color/colorPrimaryDark"
-            android:textStyle="bold"
-            />
+            android:textStyle="bold" />
 
         <Spinner
             android:id="@+id/spinner"
@@ -40,9 +38,9 @@
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/posttext"
@@ -56,8 +54,8 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="343dp"
-        android:layout_height="318dp"
+        android:layout_width="match_parent"
+        android:layout_height="170dp"
         android:layout_marginBottom="-40dp"
         android:orientation="horizontal">
 
@@ -71,8 +69,8 @@
 
     <LinearLayout
 
-        android:layout_width="343dp"
-        android:layout_height="318dp"
+        android:layout_width="match_parent"
+        android:layout_height="184dp"
         android:layout_marginBottom="-40dp"
         android:orientation="horizontal">
 
@@ -129,8 +127,8 @@
 
     <LinearLayout
 
-        android:layout_height="match_parent"
-        android:layout_width="match_parent">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <ListView
             android:layout_width="match_parent"
