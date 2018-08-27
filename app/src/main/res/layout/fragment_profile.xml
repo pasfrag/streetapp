@@ -11,25 +11,32 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="573dp"
         android:alpha="0.95"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="46dp"
+            android:layout_height="32dp"
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/imageView5"
-                android:layout_width="47dp"
-                android:layout_height="match_parent"
+                android:id="@+id/favorite"
+                android:layout_width="28dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:src="@android:drawable/btn_star_big_off" />
+                android:src="@drawable/staricon" />
+
+            <ImageView
+                android:id="@+id/favorited"
+                android:layout_width="29dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/starfullicon" />
 
             <TextView
-                android:id="@+id/textView"
-                android:layout_width="212dp"
+                android:id="@+id/profiluserename"
+                android:layout_width="237dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="Johny34"
@@ -38,7 +45,7 @@
                 android:textStyle="italic" />
 
             <ImageView
-                android:id="@+id/imageView12"
+                android:id="@+id/profilesettings"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -47,21 +54,15 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="267dp"
+            android:layout_height="35dp"
             android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/imageView3"
-                android:layout_width="371dp"
-                android:layout_height="230dp"
-                app:srcCompat="@drawable/streetart1" />
-
             <TextView
-                android:id="@+id/textView2"
+                android:id="@+id/profilename"
                 android:layout_width="match_parent"
-                android:layout_height="55dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="John Lenon"
+                android:text="John Brown"
                 android:textAlignment="center"
                 android:textSize="24sp"
                 android:textStyle="bold" />
@@ -70,11 +71,11 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="33dp"
+            android:layout_height="30dp"
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/textView3"
+                android:id="@+id/profileartist"
                 android:layout_width="wrap_content"
                 android:layout_height="32dp"
                 android:layout_weight="1"
@@ -84,7 +85,7 @@
                 android:textStyle="italic" />
 
             <TextView
-                android:id="@+id/textView4"
+                android:id="@+id/profilelocation"
                 android:layout_width="wrap_content"
                 android:layout_height="32dp"
                 android:layout_weight="1"
@@ -101,52 +102,47 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/textView5"
+                android:id="@+id/profiletext"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="Singing is my passion. I startet to sing since 7 years old. Now i am 17. You can find me in Central Station of London every Saturday and Sunday!"
+                android:text="Singing is my passion. I started to sing since 7 years old. Now i am 17. You can find me in Central Station of London every Saturday and Sunday!"
                 android:textSize="18sp" />
+
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="75dp"
+            android:layout_height="134dp"
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/imageView10"
+                android:id="@+id/profileimg1"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="146dp"
                 android:layout_weight="1"
                 app:srcCompat="@drawable/artist1" />
 
-            <ImageView
-                android:id="@+id/imageView11"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                app:srcCompat="@drawable/artist2" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="75dp"
+            android:layout_height="132dp"
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/imageView13"
-                android:layout_width="190dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                app:srcCompat="@drawable/artist3" />
-
-            <ImageView
-                android:id="@+id/imageView14"
+                android:id="@+id/profileimg2"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="149dp"
                 android:layout_weight="1"
-                app:srcCompat="@drawable/singer1" />
+                android:src="@drawable/artist2" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
         </LinearLayout>
     </LinearLayout>
 
