@@ -2,18 +2,14 @@ package com.streetapp;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
+import android.widget.TextView;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -27,7 +23,6 @@ import com.android.volley.RetryPolicy;
 import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.Volley;
 import com.streetapp.Classes.Post;
 import com.streetapp.Classes.PostsAdapter;
@@ -35,27 +30,35 @@ import com.streetapp.Classes.PostsAdapter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+//import com.streetapp.streetapp.R;
 
+import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 public class StartPageFragment extends Fragment{
 
 	private static final String POST_URL = "http://sapp.000webhostapp.com/getposts.php";
-	private static final String IMAGE_URL = "http://sapp.000webhostapp.com/getimage.php";
 	private String username;
 	private Long userId;
 	private RecyclerView recyclerView;
 	private ArrayList<Post> postsList;
 	private PostsAdapter postsAdapter;
+    private PopupWindow popupWindow;
+    private LinearLayout linearLayout;
+    private Button streetactionbutton;
 
 //	private OnFragmentInteractionListener mListener;
 
@@ -66,7 +69,6 @@ public class StartPageFragment extends Fragment{
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 	}
 
 	@Override
@@ -74,6 +76,15 @@ public class StartPageFragment extends Fragment{
 							 Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
 		View rootView = inflater.inflate(R.layout.fragment_start_page, container, false);
+
+		linearLayout = (LinearLayout) rootView.findViewById(R.id.linearstreetaction);
+		streetactionbutton = (Button) rootView.findViewById(R.id.streetaction);
+		streetactionbutton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				StreetActionPopup(v);
+			}
+		});
 
 		recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
 		recyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity().getBaseContext()));
@@ -203,4 +214,24 @@ public class StartPageFragment extends Fragment{
 		requestQueue.add(httpRequest);
 	}
 
+
+
+
+
+    public void StreetActionPopup (View view) {
+        LayoutInflater layoutInflater = (LayoutInflater) getActivity()
+                .getSystemService(LAYOUT_INFLATER_SERVICE);
+
+        View popupView = layoutInflater.inflate(R.layout.enter_post, null);
+        popupWindow = new PopupWindow(popupView, LinearLayout.LayoutParams.MATCH_PARENT, 650);
+        popupWindow.setFocusable(true);
+        popupWindow.update();
+
+        TextView EnterPost = (TextView) popupView.findViewById(R.id.streetaction);
+
+		popupWindow.showAtLocation(linearLayout, Gravity.CENTER, 0, 0);
+
+
+
+    }
 }
