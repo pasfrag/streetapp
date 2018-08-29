@@ -95,17 +95,27 @@ public class LoginActivity extends Activity {
 							int code = jsonResponse.getInt("code");
 
 							if (code == 200){
+								SharedPreferences preferences = LoginActivity.this.getSharedPreferences("auth", Context.MODE_PRIVATE);
+								SharedPreferences.Editor editor = preferences.edit();
+
+								long id = jsonResponse.getLong("id");
+								editor.putLong("user_id", id);
+
+								String username = jsonResponse.getString("username");
+								editor.putString("username", username);
+
+								String email = jsonResponse.getString("email");
+								editor.putString("email", email);
 
 								Boolean flag = jsonResponse.getBoolean("rememberme_exists");
 
 								if (flag) {
-									SharedPreferences preferences = LoginActivity.this.getSharedPreferences("auth", Context.MODE_PRIVATE);
-									SharedPreferences.Editor editor = preferences.edit();
 
 									String auth = jsonResponse.getString("auth");
 									editor.putString("remember_me_auth", auth);
-									editor.apply();
 								}
+
+								editor.apply();
 
 								Intent intent = new Intent(LoginActivity.this, UserAreaActivity.class);
 								LoginActivity.this.startActivity(intent);
