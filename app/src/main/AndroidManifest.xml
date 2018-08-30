@@ -22,7 +22,8 @@
         <activity android:name=".LoginActivity">
         </activity>
         <activity android:name=".RegisterActivity"/>
-        <activity android:name=".UserAreaActivity"/>
+        <activity android:name=".UserAreaActivity"
+            android:windowSoftInputMode="stateHidden"/>
         <activity android:name=".LoadingActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

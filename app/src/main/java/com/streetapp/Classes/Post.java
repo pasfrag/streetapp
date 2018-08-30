@@ -1,7 +1,6 @@
 package com.streetapp.Classes;
 
 import android.graphics.Bitmap;
-import android.media.Image;
 
 import java.util.ArrayList;
 
@@ -94,6 +93,7 @@ public class Post {
 		this.tags = tags;
 		this.likes = likes;
 		this.comments = comments;
+		this.image = null;
 		this.hasImage = true;
 		this.hasLocation = false;
 		this.hasEventId = false;
@@ -110,6 +110,7 @@ public class Post {
 		this.likes = likes;
 		this.comments = comments;
 		this.eventId = eventId;
+		this.image = null;
 		this.hasImage = true;
 		this.hasLocation = false;
 		this.hasEventId = true;
@@ -189,5 +190,17 @@ public class Post {
 
 	public int numberOfComments(){
 		return comments.size();
+	}
+
+	public void addToLikes(String username){
+		likes.add(username);
+	}
+
+	public void removeFromLikes(String username){
+		likes.remove(username);
+	}
+
+	public void addToComments(String comment){
+		comments.add(comment);
 	}
 }

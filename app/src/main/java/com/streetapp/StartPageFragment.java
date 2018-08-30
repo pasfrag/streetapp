@@ -87,10 +87,22 @@ public class StartPageFragment extends Fragment{
 		});
 
 		recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
-		recyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity().getBaseContext()));
+		LinearLayoutManager layoutManager = new LinearLayoutManager(this.getActivity().getBaseContext());
+		recyclerView.setLayoutManager(layoutManager);
 		postsList = new ArrayList<>();
 		postsAdapter = new PostsAdapter(this.getContext());
 		recyclerView.setAdapter(postsAdapter);
+
+
+		recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+			@Override
+			public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+				super.onScrollStateChanged(recyclerView, newState);
+				if (!recyclerView.canScrollVertically(-1)){
+					Log.e("Recycler", "Reached top");
+				}
+			}
+		});
 
 		SharedPreferences preferences = this.getActivity().getBaseContext().getSharedPreferences("auth", Context.MODE_PRIVATE);
 		username = preferences.getString("username", "");
