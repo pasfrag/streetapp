@@ -33,18 +33,11 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-//import com.streetapp.streetapp.R;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
@@ -75,14 +68,39 @@ public class StartPageFragment extends Fragment{
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 							 Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		View rootView = inflater.inflate(R.layout.fragment_start_page, container, false);
+		final View rootView = inflater.inflate(R.layout.fragment_start_page, container, false);
 
 		linearLayout = (LinearLayout) rootView.findViewById(R.id.linearstreetaction);
 		streetactionbutton = (Button) rootView.findViewById(R.id.streetaction);
 		streetactionbutton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				StreetActionPopup(v);
+				//StreetActionPopup(v);
+				final LinearLayout buttonLayout = (LinearLayout) rootView.findViewById(R.id.action_buttons);
+				if(buttonLayout.getVisibility() == View.VISIBLE){
+					buttonLayout.setVisibility(View.GONE);
+				}else{
+					buttonLayout.setVisibility(View.VISIBLE);
+
+					Button postButton = (Button) rootView.findViewById(R.id.post_button);
+					postButton.setOnClickListener(new View.OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							buttonLayout.setVisibility(View.GONE);
+							postPopup();
+						}
+					});
+
+					Button eventButton = (Button) rootView.findViewById(R.id.event_button);
+					eventButton.setOnClickListener(new View.OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							buttonLayout.setVisibility(View.GONE);
+							eventPopup();
+						}
+					});
+
+				}
 			}
 		});
 
@@ -230,7 +248,8 @@ public class StartPageFragment extends Fragment{
 
 
 
-    public void StreetActionPopup (View view) {
+    public void postPopup() {
+
         LayoutInflater layoutInflater = (LayoutInflater) getActivity()
                 .getSystemService(LAYOUT_INFLATER_SERVICE);
 
@@ -243,7 +262,22 @@ public class StartPageFragment extends Fragment{
 
 		popupWindow.showAtLocation(linearLayout, Gravity.CENTER, 0, 0);
 
-
-
     }
+
+    public void eventPopup(){
+
+		LayoutInflater layoutInflater = (LayoutInflater) getActivity()
+				.getSystemService(LAYOUT_INFLATER_SERVICE);
+
+		View popupView = layoutInflater.inflate(R.layout.enter_post, null);
+		popupWindow = new PopupWindow(popupView, LinearLayout.LayoutParams.MATCH_PARENT, 650);
+		popupWindow.setFocusable(true);
+		popupWindow.update();
+
+		TextView EnterPost = (TextView) popupView.findViewById(R.id.streetaction);
+
+		popupWindow.showAtLocation(linearLayout, Gravity.CENTER, 0, 0);
+
+	}
+
 }

@@ -38,11 +38,32 @@
         </LinearLayout>
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/action_buttons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/streetaction"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/post_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Post"/>
+
+        <Button
+            android:id="@+id/event_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Event"/>
+
+    </LinearLayout>
+
     <Button
         android:id="@+id/streetaction"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:text="Street Action"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"/>
