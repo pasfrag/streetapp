@@ -34,7 +34,7 @@ import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link StartPageFragment.OnFragmentInteractionListener} interface
+
  * to handle interaction events.
  * Use the {@link StartPageFragment#newInstance} factory method to
  * create an instance of this fragment.
