@@ -3,10 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:alpha="0.95"
     android:background="@android:color/background_light"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:layout_margin="5dp"
+    >
 
     <TextView
         android:id="@+id/posttime"
@@ -21,7 +23,7 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/postcomandphoto"
+            android:id="@+id/postinfo"
             android:layout_width="228dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.25"
@@ -30,7 +32,7 @@
             android:textStyle="bold" />
 
         <Spinner
-            android:id="@+id/spinner"
+            android:id="@+id/tools"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0.25" />
@@ -57,14 +59,16 @@
         android:layout_width="match_parent"
         android:layout_height="170dp"
         android:layout_marginBottom="-40dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone"
+        android:id="@+id/map_ll">
 
         <com.google.android.gms.maps.MapView
             android:id="@+id/mapView"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:visibility="gone" />
+            android:visibility="visible"/>
     </LinearLayout>
 
     <LinearLayout
@@ -72,15 +76,17 @@
         android:layout_width="match_parent"
         android:layout_height="184dp"
         android:layout_marginBottom="-40dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone"
+        android:id="@+id/image_ll">
 
         <ImageView
             android:id="@+id/photoupload"
             android:layout_width="wrap_content"
             android:layout_height="280dp"
             android:layout_marginBottom="80dp"
-            android:visibility="gone"
-            app:srcCompat="@drawable/streetart1" />
+            android:visibility="visible"
+            app:srcCompat="@drawable/streetart1"/>
 
     </LinearLayout>
 
@@ -95,7 +101,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="50dp"
-            android:onClick="add"
             android:text="Love it!"
             android:textAllCaps="false" />
 
@@ -103,10 +108,23 @@
             android:id="@+id/comment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="dismissPopup"
             android:text="Comment"
             android:textAllCaps="false" />
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/likesTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Joy, Jack and 3 others Love it!"
+            android:textColor="@color/colorPrimaryDark" />
     </LinearLayout>
 
     <LinearLayout
@@ -115,14 +133,21 @@
         android:orientation="horizontal">
 
         <EditText
-            android:id="@+id/editText2"
+            android:id="@+id/commit_et"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:layout_weight="1"
             android:ems="10"
-            android:text="Say something..."
+            android:hint="Say something..."
+            android:textColorHint="@color/colorPrimaryDark"
             android:textColor="@color/colorPrimaryDark"
             android:textStyle="italic" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/comment_send"
+            android:text="Send"/>
     </LinearLayout>
 
     <LinearLayout
@@ -132,21 +157,8 @@
 
         <ListView
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Joy, Jack and 3 others Love it!"
-            android:textColor="@color/colorPrimaryDark" />
+            android:layout_height="match_parent"
+            android:id="@+id/comment_list"/>
     </LinearLayout>
 
 </LinearLayout>
