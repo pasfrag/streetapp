@@ -26,28 +26,28 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ems="10"
-            android:inputType="textPersonName"
-            android:text="What is the event title?" />
+            android:hint="What is the event title?"
+            android:inputType="textPersonName" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="135dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <EditText
             android:id="@+id/enterevdescription"
-            android:layout_width="wrap_content"
-            android:layout_height="74dp"
+            android:layout_width="330dp"
+            android:layout_height="81dp"
             android:layout_weight="1"
             android:ems="10"
-            android:inputType="none|textPersonName"
-            android:text="Write a description.." />
+            android:hint="Write a description"
+            android:inputType="none|textPersonName" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="204dp"
+        android:layout_height="205dp"
         android:orientation="horizontal">
 
         <TextView
@@ -64,8 +64,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ems="10"
-            android:inputType="textPersonName"
-            android:text="Which is the location?" />
+            android:hint="Which is the location>"
+            android:inputType="textPersonName" />
 
     </LinearLayout>
 

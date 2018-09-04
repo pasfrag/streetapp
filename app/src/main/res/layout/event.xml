@@ -84,13 +84,6 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/evposter1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="Event poster:"
-            android:textSize="18sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -98,12 +91,6 @@
         android:layout_height="239dp"
         android:orientation="horizontal">
 
-        <ImageView
-            android:id="@+id/evposter2"
-            android:layout_width="wrap_content"
-            android:layout_height="267dp"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/logo3" />
     </LinearLayout>
 
     <LinearLayout
@@ -121,7 +108,7 @@
         <Button
             android:id="@+id/yesbutnotsure"
             android:layout_width="wrap_content"
-            android:layout_height="70dp"
+            android:layout_height="67dp"
             android:layout_weight="1"
             android:text="yes but not sure" />
     </LinearLayout>
