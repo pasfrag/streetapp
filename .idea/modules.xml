@@ -2,8 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/diploma.iml" filepath="$PROJECT_DIR$/diploma.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Diploma.iml" filepath="$PROJECT_DIR$/Diploma.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/httpclient-4.5.6/httpclient-4.5.6.iml" filepath="$PROJECT_DIR$/httpclient-4.5.6/httpclient-4.5.6.iml" />
+      <module fileurl="file://$PROJECT_DIR$/httpcore-4.4.10/httpcore-4.4.10.iml" filepath="$PROJECT_DIR$/httpcore-4.4.10/httpcore-4.4.10.iml" />
+      <module fileurl="file://$PROJECT_DIR$/httpmime-4.5.6/httpmime-4.5.6.iml" filepath="$PROJECT_DIR$/httpmime-4.5.6/httpmime-4.5.6.iml" />
     </modules>
   </component>
 </project>

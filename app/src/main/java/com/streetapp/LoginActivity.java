@@ -107,6 +107,9 @@ public class LoginActivity extends Activity {
 								String email = jsonResponse.getString("email");
 								editor.putString("email", email);
 
+								int category = jsonResponse.getInt("category");
+								editor.putInt("category", category);
+
 								Boolean flag = jsonResponse.getBoolean("rememberme_exists");
 
 								if (flag) {
