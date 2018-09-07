@@ -81,7 +81,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="79dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
 
         <Button
             android:id="@+id/enterpost"

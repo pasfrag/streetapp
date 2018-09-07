@@ -7,6 +7,8 @@ import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -19,6 +21,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.EditText;
@@ -66,10 +70,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import android.view.Gravity;
@@ -86,6 +92,7 @@ import static android.content.Context.LOCATION_SERVICE;
 public class StartPageFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback {
 
 	private static final String POST_URL = "http://sapp.000webhostapp.com/getposts.php";
+	private static final String EVENT_URL = "http://sapp.000webhostapp.com/event.php";
 	private String username;
 	private long userId;
 	private RecyclerView recyclerView;
@@ -404,13 +411,117 @@ public class StartPageFragment extends Fragment implements GoogleApiClient.Conne
 		LayoutInflater layoutInflater = (LayoutInflater) getActivity()
 				.getSystemService(LAYOUT_INFLATER_SERVICE);
 
-		View popupView = layoutInflater.inflate(R.layout.enter_post, null);
-		popupWindow = new PopupWindow(popupView, LinearLayout.LayoutParams.MATCH_PARENT, 650);
+		View popupView = layoutInflater.inflate(R.layout.enter_event, null);
+		popupWindow = new PopupWindow(popupView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 		popupWindow.setFocusable(true);
 		popupWindow.update();
 
+		final EditText titleET = (EditText) popupView.findViewById(R.id.enter_event_tittle);
+		final EditText descriptionET = (EditText) popupView.findViewById(R.id.enter_event_description);
+		final EditText locationET = (EditText) popupView.findViewById(R.id.enter_event_location);
+		final LinearLayout mapLayout = (LinearLayout) popupView.findViewById(R.id.event_map_LL);
+		final MapView eventMap = (MapView) popupView.findViewById(R.id.event_map);
+		Button publishEvent = (Button) popupView.findViewById(R.id.publish_event);
+
+		locationET.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+			}
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {
+
+				String location = s.toString();
+				List<Address> addresses;
+				Geocoder geocoder = new Geocoder(getActivity().getBaseContext(), Locale.getDefault());
+				try {
+					addresses = geocoder.getFromLocationName(location, 1);
+					if (addresses.size() > 0) {
+						Location eventLocation = new Location("event_provider");
+						eventLocation.setLatitude(addresses.get(0).getLatitude());
+						eventLocation.setLongitude(addresses.get(0).getLongitude());
+						eventLocation.setAccuracy(0);
+						mapLayout.setVisibility(View.VISIBLE);
+						addMarker(eventMap, eventLocation);
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+			}
+		});
+
+
+		publishEvent.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				String title = titleET.getText().toString();
+				String description = descriptionET.getText().toString();
+				if (location == null || title.length() == 0 || description.length() == 0){
+					Log.e("Event","Do nothing");
+				}
+				else{
+					Log.e("Event","Upload post");
+					double latitude = location.getLatitude();
+					double longtitude = location.getLongitude();
+					String location = latitude + "|" + longtitude;
+					uploadEvent( location, description, title);
+					popupWindow.dismiss();
+				}
+			}
+		});
 
 		popupWindow.showAtLocation(linearLayout, Gravity.CENTER, 0, 0);
+
+	}
+
+	public void uploadEvent(String location, String description, String title){
+
+		this.location = null;
+		long date = System.currentTimeMillis()/1000;
+		ArrayList<String> names = new ArrayList<>();
+		ArrayList<String> values = new ArrayList<>();
+
+		names.add("users_id");
+		names.add("location");
+		names.add("date");
+		names.add("description");
+		names.add("title");
+
+		values.add(Long.toString(userId));
+		values.add(location);
+		values.add(Long.toString(date));
+		values.add(description);
+		values.add(title);
+
+		Response.Listener listener = new Response.Listener<String>() {
+			@Override
+			public void onResponse(String response) {
+				Log.e("Event request", response);
+			}
+		};
+
+		Response.ErrorListener errorListener = new Response.ErrorListener() {
+			@Override
+			public void onErrorResponse(VolleyError error) {
+
+			}
+		};
+
+		HttpRequest request = new HttpRequest(EVENT_URL, listener, errorListener, names, values);
+
+		RequestQueue requestQueue = Volley.newRequestQueue(this.getActivity().getBaseContext());
+		int socketTimeout = 30000;
+		RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+
+		request.setRetryPolicy(policy);
+		requestQueue.add(request);
 
 	}
 
