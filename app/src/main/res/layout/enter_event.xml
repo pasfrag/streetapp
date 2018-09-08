@@ -41,8 +41,10 @@
             android:layout_height="81dp"
             android:layout_weight="1"
             android:ems="10"
+            android:maxLines="10"
             android:hint="Write a description"
-            android:inputType="none|textPersonName" />
+            android:inputType="none|textPersonName"
+            android:textAlignment="viewStart" />
     </LinearLayout>
 
     <LinearLayout

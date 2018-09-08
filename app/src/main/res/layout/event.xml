@@ -75,7 +75,9 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:maxLines="10"
             android:text="Everyone gather around about 22:00 at the White Tower of Thessaloniki! We will provide beers with only 0,50 euros. Also, free  blue t - shirts will be available for available. Be There! "
+            android:textAlignment="viewStart"
             android:textSize="18sp" />
     </LinearLayout>
 
