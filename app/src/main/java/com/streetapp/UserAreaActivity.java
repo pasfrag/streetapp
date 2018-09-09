@@ -92,6 +92,14 @@ public class UserAreaActivity extends AppCompatActivity {
 										.addToBackStack(null)
 										.commit();
 								return true;
+							case R.id.settings_page:
+								fragment = new SettingsFragment();
+								transaction
+										.replace(R.id.fragment_container, fragment)
+										.addToBackStack(null)
+										.commit();
+								return true;
+
 						}
 						/*if (menuItem.getItemId() == R.id.logout){
 							SharedPreferences preferences = UserAreaActivity.this.getSharedPreferences("auth", Context.MODE_PRIVATE);

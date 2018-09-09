@@ -9,11 +9,11 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="36dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/textView11"
+            android:id="@+id/profile_username_tv"
             android:layout_width="210dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -27,11 +27,11 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="267dp"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <ImageView
-            android:id="@+id/imageView3"
+            android:id="@+id/profile_pic"
             android:layout_width="wrap_content"
             android:layout_height="263dp"
             android:layout_weight="1"
@@ -41,13 +41,13 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="33dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/textView2"
-            android:layout_width="150dp"
-            android:layout_height="55dp"
+            android:id="@+id/profile_name_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="John Lenon"
             android:textAlignment="viewStart"
@@ -55,9 +55,9 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/profile_art_category_tv"
             android:layout_width="wrap_content"
-            android:layout_height="32dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Singer "
             android:textAlignment="center"
@@ -72,7 +72,7 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/textView"
+
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -83,15 +83,15 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="104dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/textView5"
+            android:id="@+id/profile_description_tv"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="Singing is my passion. I startet to sing since 7 years old. Now i am 17. You can find me in Central Station of London every Saturday and Sunday!"
+            android:text="Singing is my passion. I started to sing since 7 years old. Now i am 17. You can find me in Central Station of London every Saturday and Sunday!"
             android:textSize="18sp" />
     </LinearLayout>
 
@@ -101,12 +101,50 @@
         android:orientation="horizontal">
 
         <EditText
-            android:id="@+id/editText2"
+            android:id="@+id/enter_description_et"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ems="10"
             android:hint='"edit text on visibility gone"'
             android:inputType="textPersonName" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/profile_follow_bt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="60dp"
+            android:text="Follow" />
+
+        <Button
+            android:id="@+id/profile_unfollow_bt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="60dp"
+            android:layout_weight="1"
+            android:text="Unfollow"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/profile_favourite_bt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="60dp"
+            android:text="Favourite" />
+
+        <Button
+            android:id="@+id/profile_unfavourite_bt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="60dp"
+            android:layout_weight="1"
+            android:text="Unfavourite"
+            android:visibility="gone" />
     </LinearLayout>
 </LinearLayout>
