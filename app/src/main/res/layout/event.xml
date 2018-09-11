@@ -1,116 +1,160 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:alpha="0.95"
-    android:orientation="vertical">
+<?xml version="1.0" encoding="utf-8"?>
 
-
-    <LinearLayout
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+    android:id="@+id/event_RL">
+    <ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="37dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/evtitle1"
-            android:layout_width="128dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="Event title:"
-            android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/evtitle2"
-            android:layout_width="284dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="SKG Music"
-            android:textSize="18sp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/evlocation1"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="Location:"
-            android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/evlocation2"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="White Tower of Thessaloniki"
-            android:textSize="18sp" />
-    </LinearLayout>
-
-    <LinearLayout
+        android:layout_height="match_parent">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:alpha="0.95"
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/evdescription1"
-            android:layout_width="wrap_content"
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="37dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="128dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Event title:"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/evtitle"
+                android:layout_width="284dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Description:"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/evdescription"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Date:"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/evdate"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Location:"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/evlocation"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="White Tower of Thessaloniki"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/map_location"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/attendTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/interestedTV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="Description:"
-            android:textSize="18sp" />
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/iwillgo"
+                android:layout_width="152dp"
+                android:layout_height="67dp"
+                android:layout_weight="1"
+                android:text="I will go! " />
+
+            <Button
+                android:id="@+id/yesbutnotsure"
+                android:layout_width="wrap_content"
+                android:layout_height="67dp"
+                android:layout_weight="1"
+                android:text="yes but not sure" />
+        </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/event_posts_RV"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/action_post"/>
+
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="125dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/evdescription2"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="Everyone gather around about 22:00 at the White Tower of Thessaloniki! We will provide beers with only 0,50 euros. Also, free  blue t - shirts will be available for available. Be There! "
-            android:textSize="18sp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
+    </ScrollView>
+    <Button
+        android:id="@+id/event_post_action"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="239dp"
-        android:orientation="horizontal">
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/iwillgo"
-            android:layout_width="152dp"
-            android:layout_height="67dp"
-            android:layout_weight="1"
-            android:text="I will go! " />
-
-        <Button
-            android:id="@+id/yesbutnotsure"
-            android:layout_width="wrap_content"
-            android:layout_height="67dp"
-            android:layout_weight="1"
-            android:text="yes but not sure" />
-    </LinearLayout>
-
-</LinearLayout>
+        android:text="Street Action"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"/>
+</RelativeLayout>

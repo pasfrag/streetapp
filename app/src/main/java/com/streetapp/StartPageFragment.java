@@ -128,7 +128,7 @@ public class StartPageFragment extends Fragment implements GoogleApiClient.Conne
 			fileUri = savedInstanceState.getParcelable("file_uri");
 		}
 
-		linearLayout = (LinearLayout) rootView.findViewById(R.id.linearstreetaction);
+		linearLayout = (LinearLayout) rootView.findViewById(R.id.action_buttons);
 
 		SharedPreferences preferences = this.getActivity().getBaseContext().getSharedPreferences("auth", Context.MODE_PRIVATE);
 		username = preferences.getString("username", "");
@@ -328,6 +328,7 @@ public class StartPageFragment extends Fragment implements GoogleApiClient.Conne
 		takeImageBtn.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				postMap .setVisibility(View.GONE);
 				location = null;
 				captureImage();
 			}

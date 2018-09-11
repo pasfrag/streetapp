@@ -11,15 +11,39 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.support.v7.widget.Toolbar;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.Volley;
+import com.streetapp.Classes.MyArrayAdapter;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 public class UserAreaActivity extends AppCompatActivity {
 
+	private static final String SEARCH_URL = "http://sapp.000webhostapp.com/search.php";
 	private DrawerLayout drawerLayout;
 	private NavigationView navigationView;
+	private AutoCompleteTextView searchACTV;
+	private ArrayList<String> users, usersId, events, eventsId;
+	private MyArrayAdapter<String> arrayAdapter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +57,112 @@ public class UserAreaActivity extends AppCompatActivity {
 		actionbar.setDisplayHomeAsUpEnabled(true);
 		actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
 
+		searchACTV = (AutoCompleteTextView) findViewById(R.id.search_ACTV);
+		arrayAdapter = new MyArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line);
+		searchACTV.setAdapter(arrayAdapter);
+
+		searchACTV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				if (position < users.size()){
+					Log.e("Fragment transaction", "Profile");
+				}else {
+					int correctPosition = position - users.size();
+					EventFragment fragment = new EventFragment();
+
+					searchACTV.setVisibility(View.GONE);
+
+					Bundle bundle = new Bundle();
+					bundle.putLong("event_id", Long.parseLong(eventsId.get(correctPosition)));
+
+					fragment.setArguments(bundle);
+
+					android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+					FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+					transaction
+							.replace(R.id.fragment_container, fragment)
+							.addToBackStack(null)
+							.commit();
+
+					Log.e("Fragment transaction", "Event");
+				}
+			}
+		});
+
+		searchACTV.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+			}
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {
+
+				String searchTerm = s.toString();
+
+				Response.Listener listener = new Response.Listener<String>() {
+					@Override
+					public void onResponse(String response) {
+
+						try {
+							Log.e("Volley response", response);
+							JSONObject jsonResponse = new JSONObject(response);
+							JSONArray usersJArray = jsonResponse.getJSONArray("users");
+							JSONArray eventsJArray = jsonResponse.getJSONArray("events");
+							JSONArray usersIDJArray = jsonResponse.getJSONArray("users_id");
+							JSONArray eventsIDJArray = jsonResponse.getJSONArray("events_id");
+
+							users = events = usersId = eventsId = null;
+
+							users = getListFromJsonList(usersJArray);
+							events= getListFromJsonList(eventsJArray);
+							usersId  = getListFromJsonList(usersIDJArray);
+							eventsId = getListFromJsonList(eventsIDJArray);
+
+							arrayAdapter.clear();
+							arrayAdapter.addAll(users);
+							arrayAdapter.addAll(events);
+							arrayAdapter.notifyDataSetChanged();
+
+							//Log.e("Array adapter", arrayAdapter.getItem(0));
+
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+
+					}
+				};
+
+				Response.ErrorListener errorListener = new Response.ErrorListener() {
+					@Override
+					public void onErrorResponse(VolleyError error) {
+
+					}
+				};
+
+				final RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+				int socketTimeout = 30000;
+				final RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+
+				ArrayList<String> names = new ArrayList<>();
+				names.add("search");
+
+				ArrayList<String> values = new ArrayList<>();
+				values.add(String.valueOf(searchTerm));
+
+				HttpRequest httpRequest = new HttpRequest(SEARCH_URL, listener, errorListener, names, values);
+				httpRequest.setRetryPolicy(policy);
+				requestQueue.add(httpRequest);
+
+			}
+		});
+
 		drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
 		navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -43,6 +173,7 @@ public class UserAreaActivity extends AppCompatActivity {
 					@Override
 					public boolean onNavigationItemSelected(MenuItem menuItem) {
 
+						searchACTV.setVisibility(View.GONE);
 						//uncheck menu items
 						uncheckMenuItems();
 						// set item as selected to persist highlight
@@ -65,6 +196,7 @@ public class UserAreaActivity extends AppCompatActivity {
 								UserAreaActivity.this.startActivity(intent);
 								break;
 							case R.id.profile:
+								searchACTV.setVisibility(View.GONE);
 								fragment = new ProfileFragment();
 								transaction
 										.replace(R.id.fragment_container, fragment)
@@ -72,6 +204,7 @@ public class UserAreaActivity extends AppCompatActivity {
 										.commit();
 								return true;
 							case R.id.start_page:
+								searchACTV.setVisibility(View.VISIBLE);
 								fragment = new StartPageFragment();
 								transaction
 										.replace(R.id.fragment_container, fragment)
@@ -79,6 +212,7 @@ public class UserAreaActivity extends AppCompatActivity {
 										.commit();
 								return true;
 							case R.id.map_page:
+								searchACTV.setVisibility(View.GONE);
 								fragment = new CloseMapFragment();
 								transaction
 										.replace(R.id.fragment_container, fragment)
@@ -86,6 +220,7 @@ public class UserAreaActivity extends AppCompatActivity {
 										.commit();
 								return true;
 							case R.id.about_page:
+								searchACTV.setVisibility(View.GONE);
 								fragment = new AboutSappFragment();
 								transaction
 										.replace(R.id.fragment_container, fragment)
@@ -93,14 +228,6 @@ public class UserAreaActivity extends AppCompatActivity {
 										.commit();
 								return true;
 						}
-						/*if (menuItem.getItemId() == R.id.logout){
-							SharedPreferences preferences = UserAreaActivity.this.getSharedPreferences("auth", Context.MODE_PRIVATE);
-							SharedPreferences.Editor editor = preferences.edit();
-							editor.putString("remember_me_auth", "");
-							editor.apply();
-							Intent intent = new Intent(UserAreaActivity.this, LoginActivity.class);
-							UserAreaActivity.this.startActivity(intent);
-						}*/
 						// For example, swap UI fragments here
 						return true;
 					}
@@ -157,5 +284,21 @@ public class UserAreaActivity extends AppCompatActivity {
 		for (int i = 0; i < size; i++) {
 			navigationView.getMenu().getItem(i).setChecked(false);
 		}
+	}
+
+	private ArrayList<String> getListFromJsonList(JSONArray jsonArray){
+
+		ArrayList<String> arrayList = new ArrayList<>();
+
+		for (int i = 0; i < jsonArray.length(); i++){
+			try {
+				arrayList.add(jsonArray.getString(i));
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return arrayList;
+
 	}
 }
