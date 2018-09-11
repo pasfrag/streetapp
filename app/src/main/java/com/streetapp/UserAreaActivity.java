@@ -227,6 +227,14 @@ public class UserAreaActivity extends AppCompatActivity {
 										.addToBackStack(null)
 										.commit();
 								return true;
+							case R.id.settings_page:
+								fragment = new SettingsFragment();
+								transaction
+										.replace(R.id.fragment_container, fragment)
+										.addToBackStack(null)
+										.commit();
+								return true;
+
 						}
 						// For example, swap UI fragments here
 						return true;
