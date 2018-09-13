@@ -44,12 +44,18 @@ public class UserAreaActivity extends AppCompatActivity {
 	private AutoCompleteTextView searchACTV;
 	private ArrayList<String> users, usersId, events, eventsId;
 	private MyArrayAdapter<String> arrayAdapter;
+	private long userId;
+	private String username;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_user_area);
+
+		SharedPreferences preferences = this.getSharedPreferences("auth", Context.MODE_PRIVATE);
+		username = preferences.getString("username", "");
+		userId = preferences.getLong("user_id", 0);
 
 		Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
 		setSupportActionBar(toolbar);
@@ -64,13 +70,30 @@ public class UserAreaActivity extends AppCompatActivity {
 		searchACTV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+				searchACTV.setVisibility(View.GONE);
+
 				if (position < users.size()){
+					ProfileFragment fragment = new ProfileFragment();
+
+					Bundle bundle = new Bundle();
+					bundle.putLong("user_id", Long.parseLong(usersId.get(position)));
+					bundle.putString("username", users.get(position));
+
+					fragment.setArguments(bundle);
+
+					android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+					FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+					transaction
+							.replace(R.id.fragment_container, fragment)
+							.addToBackStack(null)
+							.commit();
+
 					Log.e("Fragment transaction", "Profile");
 				}else {
 					int correctPosition = position - users.size();
 					EventFragment fragment = new EventFragment();
-
-					searchACTV.setVisibility(View.GONE);
 
 					Bundle bundle = new Bundle();
 					bundle.putLong("event_id", Long.parseLong(eventsId.get(correctPosition)));
@@ -87,6 +110,8 @@ public class UserAreaActivity extends AppCompatActivity {
 
 					Log.e("Fragment transaction", "Event");
 				}
+
+				uncheckMenuItems();
 			}
 		});
 
@@ -196,8 +221,13 @@ public class UserAreaActivity extends AppCompatActivity {
 								UserAreaActivity.this.startActivity(intent);
 								break;
 							case R.id.profile:
+								Bundle arguments = new Bundle();
+								arguments.putLong("user_id", userId);
+								arguments.putString("username", username);
+
 								searchACTV.setVisibility(View.GONE);
 								fragment = new ProfileFragment();
+								fragment.setArguments(arguments);
 								transaction
 										.replace(R.id.fragment_container, fragment)
 										.addToBackStack(null)

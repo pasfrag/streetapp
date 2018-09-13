@@ -4,8 +4,10 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v4.util.LruCache;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.RetryPolicy;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 
@@ -24,7 +26,7 @@ public class VolleySingleton {
 		mImageLoader = new ImageLoader(mRequestQueue,
 				new ImageLoader.ImageCache() {
 					private final LruCache<String, Bitmap>
-							cache = new LruCache<String, Bitmap>(20);
+							cache = new LruCache<String, Bitmap>(200);
 
 					@Override
 					public Bitmap getBitmap(String url) {
@@ -56,6 +58,7 @@ public class VolleySingleton {
 	}
 
 	public <T> void addToRequestQueue(Request<T> req) {
+		req.setRetryPolicy(new DefaultRetryPolicy(0, -1, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 		getRequestQueue().add(req);
 	}
 

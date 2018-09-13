@@ -36,6 +36,7 @@ public class LoadingActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_loading);
 
 		String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION,
+				Manifest.permission.ACCESS_COARSE_LOCATION,
 				Manifest.permission.CAMERA,
 				Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
@@ -124,6 +125,7 @@ public class LoadingActivity extends AppCompatActivity {
 			case Permission_All:
 				Map<String, Integer> perms = new HashMap<>();
 				perms.put(Manifest.permission.ACCESS_FINE_LOCATION, PackageManager.PERMISSION_GRANTED);
+				perms.put(Manifest.permission.ACCESS_COARSE_LOCATION, PackageManager.PERMISSION_GRANTED);
 				perms.put(Manifest.permission.CAMERA, PackageManager.PERMISSION_GRANTED);
 				perms.put(Manifest.permission.WRITE_EXTERNAL_STORAGE, PackageManager.PERMISSION_GRANTED);
 				if (grantResults.length > 0) {
@@ -131,6 +133,7 @@ public class LoadingActivity extends AppCompatActivity {
 						perms.put(permissions[i], grantResults[i]);
 					}
 					if (perms.get(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+							perms.get(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
 							perms.get(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
 							perms.get(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
 						mainFunction();

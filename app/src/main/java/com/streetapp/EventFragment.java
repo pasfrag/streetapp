@@ -487,6 +487,7 @@ public class EventFragment extends Fragment implements OnMapReadyCallback{
 			@Override
 			public void onClick(View v) {
 
+				postMap.setVisibility(View.VISIBLE);
 				fileUri = null;
 				postImage.setVisibility(View.GONE);
 				postImage.setImageBitmap(null);
