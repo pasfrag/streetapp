@@ -54,6 +54,7 @@ dependencies {
         exclude module: 'httpclient'
     }
     implementation 'org.apache.httpcomponents:httpclient-android:4.3.5.1'
+    implementation 'com.squareup.picasso:picasso:2.71828'
 }
 
 configurations.all {

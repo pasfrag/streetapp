@@ -61,6 +61,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.streetapp.Classes.HttpRequest;
 import com.streetapp.Classes.Post;
 import com.streetapp.Classes.PostsAdapter;
 import com.streetapp.Classes.UploadPost;

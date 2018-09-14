@@ -24,6 +24,7 @@ import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.streetapp.Classes.HttpRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;

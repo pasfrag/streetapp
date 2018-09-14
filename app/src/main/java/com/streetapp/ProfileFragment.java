@@ -2,6 +2,7 @@ package com.streetapp;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -28,6 +29,8 @@ import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.squareup.picasso.Picasso;
+import com.streetapp.Classes.HttpRequest;
 import com.streetapp.Classes.Post;
 import com.streetapp.Classes.PostsAdapter;
 
@@ -45,15 +48,15 @@ public class ProfileFragment extends Fragment {
 
 	private static final String PROFILE_URL = "http://sapp.000webhostapp.com/getuserdata.php";
 	private static final String POST_URL = "http://sapp.000webhostapp.com/getuserposts.php";
-	private static final String DOWNLOAD_PICTURE_URL = "";
+	private static final String DOWNLOAD_PICTURE_URL = "http://sapp.000webhostapp.com/getimage.php";
 	private static final String UPLOAD_PICTURE_URL = "";
-	private static final String DESCRIPTION_URL = "";
-	private static final String FOLLOW_URL = "";
-	private static final String FAVOURITE_URL = "";
-	private TextView usernameTV, /*fullnameTV,*/ categoryTV, descriptionTV, followersTV, favouritesTV;
+	private static final String DESCRIPTION_URL = "http://sapp.000webhostapp.com/editdescription.php";
+	private static final String FOLLOW_URL = "http://sapp.000webhostapp.com/follow.php";
+	private static final String FAVOURITE_URL = "http://sapp.000webhostapp.com/favourite.php";
+	private TextView usernameTV, categoryTV, descriptionTV, followersTV, favouritesTV;
 	private ImageView profileImageIV;
 	private EditText descriptionET;
-	private Button followBtn, favouriteBtn;
+	private Button followBtn, favouriteBtn, sendDescriptionBtn;
 	private long userId;
 	private String username;
 	private ArrayList<String> followers, favourites;
@@ -87,7 +90,6 @@ public class ProfileFragment extends Fragment {
 		favourites = new ArrayList<>();
 
 		usernameTV = (TextView) rootView.findViewById(R.id.profile_username_tv);
-		//fullnameTV = (TextView) rootView.findViewById(R.id.profile_name_tv);
 		categoryTV = (TextView) rootView.findViewById(R.id.profile_art_category_tv);
 		descriptionTV = (TextView) rootView.findViewById(R.id.profile_description_tv);
 		followersTV = (TextView) rootView.findViewById(R.id.profile_followers_tv);
@@ -96,6 +98,7 @@ public class ProfileFragment extends Fragment {
 		descriptionET = (EditText) rootView.findViewById(R.id.enter_description_et);
 		followBtn = (Button) rootView.findViewById(R.id.profile_follow_bt);
 		favouriteBtn = (Button) rootView.findViewById(R.id.profile_favourite_bt);
+		sendDescriptionBtn = (Button) rootView.findViewById(R.id.action_description_btn);
 
 		if (isCurrentUser()){
 			rootView.findViewById(R.id.profile_buttons).setVisibility(View.GONE);
@@ -108,23 +111,129 @@ public class ProfileFragment extends Fragment {
 					String text = descriptionTV.getText().toString();
 					descriptionET.setText(text);
 					descriptionET.setVisibility(View.VISIBLE);
+					sendDescriptionBtn.setVisibility(View.VISIBLE);
 					return true;
 
 				}
 			});
+			sendDescriptionBtn.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					if (!descriptionET.getText().equals("")){
+						String description = descriptionET.getText().toString();
+
+						Response.Listener listener = new Response.Listener<String>() {
+							@Override
+							public void onResponse(String response) {
+								String description = descriptionET.getText().toString();
+
+								descriptionTV.setText(description);
+								descriptionTV.setVisibility(View.VISIBLE);
+								descriptionET.setVisibility(View.GONE);
+								sendDescriptionBtn.setVisibility(View.GONE);
+							}
+						};
+
+						Response.ErrorListener errorListener = new Response.ErrorListener() {
+							@Override
+							public void onErrorResponse(VolleyError error) {
+								error.printStackTrace();
+							}
+						};
+
+						ArrayList<String> names = new ArrayList<>();
+						ArrayList<String> values = new ArrayList<>();
+
+						names.add("description");
+						names.add("user_id");
+
+						values.add(description);
+						values.add(Long.toString(userId));
+
+						sendRequest(DESCRIPTION_URL, listener, errorListener, names, values);
+
+					}
+				}
+			});
 
 		}else{
+
+
+			SharedPreferences preferences = getActivity().getBaseContext().getSharedPreferences("auth", Context.MODE_PRIVATE);
+			final long curUserId = preferences.getLong("user_id", 0);
+			final String curUsername = preferences.getString("username", "nouser");
+
 			followBtn.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
+					Response.Listener listener = new Response.Listener<String>() {
+						@Override
+						public void onResponse(String response) {
+							if (followers.contains(curUsername)){
+								followers.remove(curUsername);
+							}else {
+								followers.add(curUsername);
+							}
+							followersTV.setText(followers.size() + " follow you");
 
+
+						}
+					};
+
+					Response.ErrorListener errorListener = new Response.ErrorListener() {
+						@Override
+						public void onErrorResponse(VolleyError error) {
+							error.printStackTrace();
+						}
+					};
+
+					ArrayList<String> names = new ArrayList<>();
+					ArrayList<String> values = new ArrayList<>();
+
+					names.add("follower_id");
+					names.add("following_id");
+
+					values.add(Long.toString(curUserId));
+					values.add(Long.toString(userId));
+
+					sendRequest(FOLLOW_URL, listener, errorListener, names, values);
 				}
 			});
 
 			favouriteBtn.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
+					Response.Listener listener = new Response.Listener<String>() {
+						@Override
+						public void onResponse(String response) {
+							if (favourites.contains(curUsername)){
+								favourites.remove(curUsername);
+							}else {
+								favourites.add(curUsername);
+							}
+							favouritesTV.setText("Favourited by " + favourites.size());
 
+
+						}
+					};
+
+					Response.ErrorListener errorListener = new Response.ErrorListener() {
+						@Override
+						public void onErrorResponse(VolleyError error) {
+							error.printStackTrace();
+						}
+					};
+
+					ArrayList<String> names = new ArrayList<>();
+					ArrayList<String> values = new ArrayList<>();
+
+					names.add("follower_id");
+					names.add("following_id");
+
+					values.add(Long.toString(curUserId));
+					values.add(Long.toString(userId));
+
+					sendRequest(FAVOURITE_URL, listener, errorListener, names, values);
 				}
 			});
 		}
@@ -325,6 +434,28 @@ public class ProfileFragment extends Fragment {
 	}
 
 	private void downloadProfileImage(String imageName){
+
+		Uri builtUri = Uri.parse(DOWNLOAD_PICTURE_URL).buildUpon()
+				.appendQueryParameter("user_id", String.valueOf(userId))
+				.appendQueryParameter("image", imageName)
+				.build();
+
+		Picasso.get()
+				.load(builtUri.toString())
+				.into(profileImageIV);
+
+	}
+
+	private void sendRequest(String url, Response.Listener listener, Response.ErrorListener errorListener, ArrayList<String> names, ArrayList<String> values){
+
+		HttpRequest request = new HttpRequest(url, listener, errorListener, names, values);
+
+		RequestQueue requestQueue = Volley.newRequestQueue(this.getActivity().getBaseContext());
+		int socketTimeout = 30000;
+		RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+
+		request.setRetryPolicy(policy);
+		requestQueue.add(request);
 
 	}
 

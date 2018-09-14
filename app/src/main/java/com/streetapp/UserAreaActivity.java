@@ -3,6 +3,7 @@ package com.streetapp;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -19,8 +20,9 @@ import android.view.View;
 import android.view.Window;
 import android.support.v7.widget.Toolbar;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.RequestQueue;
@@ -28,6 +30,8 @@ import com.android.volley.Response;
 import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.squareup.picasso.Picasso;
+import com.streetapp.Classes.HttpRequest;
 import com.streetapp.Classes.MyArrayAdapter;
 
 import org.json.JSONArray;
@@ -39,6 +43,7 @@ import java.util.ArrayList;
 public class UserAreaActivity extends AppCompatActivity {
 
 	private static final String SEARCH_URL = "http://sapp.000webhostapp.com/search.php";
+	private static final String PROFILE_URL = "http://sapp.000webhostapp.com/getprofilepicture.php";
 	private DrawerLayout drawerLayout;
 	private NavigationView navigationView;
 	private AutoCompleteTextView searchACTV;
@@ -304,6 +309,8 @@ public class UserAreaActivity extends AppCompatActivity {
 				.add(R.id.fragment_container, startPageFragment)
 				.commit();
 
+		setProfilePicture();
+
 	}
 
 	@Override
@@ -322,6 +329,8 @@ public class UserAreaActivity extends AppCompatActivity {
 		for (int i = 0; i < size; i++) {
 			navigationView.getMenu().getItem(i).setChecked(false);
 		}
+
+
 	}
 
 	private ArrayList<String> getListFromJsonList(JSONArray jsonArray){
@@ -338,5 +347,21 @@ public class UserAreaActivity extends AppCompatActivity {
 
 		return arrayList;
 
+	}
+
+	private void setProfilePicture(){
+		Uri builtUri = Uri.parse(PROFILE_URL).buildUpon()
+				.appendQueryParameter("user_id", String.valueOf(userId))
+				.build();
+
+		View headerView = navigationView.getHeaderView(0);
+		TextView usernameTV = (TextView) headerView.findViewById(R.id.nav_header_textView);
+		usernameTV.setText(username);
+
+		ImageView profileIV = (ImageView) headerView.findViewById(R.id.nav_header_imageView);
+
+		Picasso.get()
+				.load(builtUri.toString())
+				.into(profileIV);
 	}
 }

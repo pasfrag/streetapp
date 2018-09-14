@@ -1,4 +1,4 @@
-package com.streetapp;
+package com.streetapp.Classes;
 
 import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;

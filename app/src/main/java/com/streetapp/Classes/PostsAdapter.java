@@ -2,6 +2,7 @@ package com.streetapp.Classes;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
@@ -24,6 +25,7 @@ import com.android.volley.Response;
 import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -33,7 +35,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.streetapp.HttpRequest;
+import com.squareup.picasso.Picasso;
 import com.streetapp.R;
 
 import java.util.ArrayList;
@@ -90,16 +92,16 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.MyViewHolder
 			holder.pImageView.setVisibility(View.GONE);
 			holder.mapLL.setVisibility(View.VISIBLE);
 			holder.addTheMarker(post);
-		}
+		}else{
 
-		if (post.isHasImage()){
+		//if (post.isHasImage()){
 			if (post.getPostImage() == null) {
 				Uri builtUri = Uri.parse(IMAGE_URL).buildUpon()
 						.appendQueryParameter("user_id", String.valueOf(post.getPostUserId()))
 						.appendQueryParameter("image", post.getPostImageName())
 						.build();
 				Log.e("image_post1", post.getPostUsername() + " " + post.getPostId());
-				imageLoader.get(builtUri.toString(), new ImageLoader.ImageListener() {
+				/*imageLoader.get(builtUri.toString(), new ImageLoader.ImageListener() {
 					@Override
 					public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
 						post.setPostImage(response.getBitmap());
@@ -114,7 +116,16 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.MyViewHolder
 					public void onErrorResponse(VolleyError error) {
 						Log.e("volley_image_error", error.getMessage() + " " + post.getPostId());
 					}
-				});
+				});*/
+				Picasso.get()
+						.load(builtUri.toString())
+						.into(holder.pImageView);
+
+				holder.mapLL.setVisibility(View.GONE);
+				holder.mapView.setVisibility(View.GONE);
+				holder.imageLL.setVisibility(View.VISIBLE);
+				holder.pImageView.setVisibility(View.VISIBLE);
+
 			}else{
 				holder.mapLL.setVisibility(View.GONE);
 				holder.mapView.setVisibility(View.GONE);

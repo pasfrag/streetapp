@@ -1,4 +1,4 @@
-package com.streetapp;
+package com.streetapp.Classes;
 
 import android.content.Context;
 import android.net.ConnectivityManager;

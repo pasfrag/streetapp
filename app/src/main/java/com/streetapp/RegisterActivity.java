@@ -2,7 +2,6 @@ package com.streetapp;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +14,7 @@ import android.widget.TextView;
 
 import com.android.volley.*;
 import com.android.volley.toolbox.Volley;
+import com.streetapp.Classes.HttpRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
