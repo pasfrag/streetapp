@@ -40,7 +40,8 @@ public class LoadingActivity extends AppCompatActivity {
 		String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION,
 				Manifest.permission.ACCESS_COARSE_LOCATION,
 				Manifest.permission.CAMERA,
-				Manifest.permission.WRITE_EXTERNAL_STORAGE};
+				Manifest.permission.WRITE_EXTERNAL_STORAGE,
+				Manifest.permission.READ_EXTERNAL_STORAGE};
 
 		if (!hasPermissions(this, permissions)){
 			ActivityCompat.requestPermissions(this, permissions, Permission_All);
@@ -130,6 +131,7 @@ public class LoadingActivity extends AppCompatActivity {
 				perms.put(Manifest.permission.ACCESS_COARSE_LOCATION, PackageManager.PERMISSION_GRANTED);
 				perms.put(Manifest.permission.CAMERA, PackageManager.PERMISSION_GRANTED);
 				perms.put(Manifest.permission.WRITE_EXTERNAL_STORAGE, PackageManager.PERMISSION_GRANTED);
+				perms.put(Manifest.permission.READ_EXTERNAL_STORAGE, PackageManager.PERMISSION_GRANTED);
 				if (grantResults.length > 0) {
 					for(int i=0;i<permissions.length;i++){
 						perms.put(permissions[i], grantResults[i]);
@@ -137,7 +139,8 @@ public class LoadingActivity extends AppCompatActivity {
 					if (perms.get(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
 							perms.get(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
 							perms.get(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
-							perms.get(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
+							perms.get(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
+							perms.get(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
 						mainFunction();
 					}
 					else {

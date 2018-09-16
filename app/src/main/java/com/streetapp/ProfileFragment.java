@@ -1,9 +1,15 @@
 package com.streetapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -30,16 +36,35 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.squareup.picasso.Picasso;
+import com.streetapp.Classes.AndroidMultiPartEntity;
 import com.streetapp.Classes.HttpRequest;
 import com.streetapp.Classes.Post;
 import com.streetapp.Classes.PostsAdapter;
+import com.streetapp.Classes.UploadPost;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import static android.app.Activity.RESULT_OK;
 
 //import com.streetapp.R;
 
@@ -49,7 +74,7 @@ public class ProfileFragment extends Fragment {
 	private static final String PROFILE_URL = "http://sapp.000webhostapp.com/getuserdata.php";
 	private static final String POST_URL = "http://sapp.000webhostapp.com/getuserposts.php";
 	private static final String DOWNLOAD_PICTURE_URL = "http://sapp.000webhostapp.com/getimage.php";
-	private static final String UPLOAD_PICTURE_URL = "";
+	private static final String UPLOAD_PICTURE_URL = "http://sapp.000webhostapp.com/setprofilepicture.php";
 	private static final String DESCRIPTION_URL = "http://sapp.000webhostapp.com/editdescription.php";
 	private static final String FOLLOW_URL = "http://sapp.000webhostapp.com/follow.php";
 	private static final String FAVOURITE_URL = "http://sapp.000webhostapp.com/favourite.php";
@@ -64,6 +89,12 @@ public class ProfileFragment extends Fragment {
 	private RecyclerView recyclerView;
 	private ArrayList<Post> postsList;
 	private PostsAdapter postsAdapter;
+
+	private String picturePath;
+	private Uri imageUri;
+
+	private static final int RESULT_LOAD_IMG = 200;
+	public static final int MEDIA_TYPE_IMAGE = 1;
 
 
 	public ProfileFragment() {
@@ -88,6 +119,8 @@ public class ProfileFragment extends Fragment {
 
 		followers =  new ArrayList<>();
 		favourites = new ArrayList<>();
+
+		picturePath = "";
 
 		usernameTV = (TextView) rootView.findViewById(R.id.profile_username_tv);
 		categoryTV = (TextView) rootView.findViewById(R.id.profile_art_category_tv);
@@ -116,6 +149,22 @@ public class ProfileFragment extends Fragment {
 
 				}
 			});
+
+			profileImageIV.setOnLongClickListener(new View.OnLongClickListener() {
+				@Override
+				public boolean onLongClick(View v) {
+
+					Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+
+
+
+					photoPickerIntent.setType("image/*");
+					startActivityForResult(photoPickerIntent, RESULT_LOAD_IMG);
+
+					return true;
+				}
+			});
+
 			sendDescriptionBtn.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -457,6 +506,119 @@ public class ProfileFragment extends Fragment {
 		request.setRetryPolicy(policy);
 		requestQueue.add(request);
 
+	}
+
+	@Override
+	public void onActivityResult(int reqCode, int resultCode, Intent data) {
+		super.onActivityResult(reqCode, resultCode, data);
+
+
+		if (resultCode == RESULT_OK) {
+			try {
+
+				imageUri = data.getData();
+				picturePath = getPath( getActivity( ).getApplicationContext( ), imageUri );
+
+				final InputStream imageStream = getActivity().getContentResolver().openInputStream(imageUri);
+				final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+				profileImageIV.setImageBitmap(selectedImage);
+				new UpdateProfilePic().execute();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+
+		}else {
+			Log.e("Activity result", " not ok");
+		}
+	}
+
+	public static String getPath( Context context, Uri uri ) {
+		String result = null;
+		String[] proj = { MediaStore.Images.Media.DATA };
+		Cursor cursor = context.getContentResolver( ).query( uri, proj, null, null, null );
+		if(cursor != null){
+			if ( cursor.moveToFirst( ) ) {
+				int column_index = cursor.getColumnIndexOrThrow( proj[0] );
+				result = cursor.getString( column_index );
+			}
+			cursor.close( );
+		}
+		if(result == null) {
+			result = "Not found";
+		}
+		return result;
+	}
+
+	private class UpdateProfilePic extends AsyncTask<Void, Void, Void>{
+		public UpdateProfilePic(){
+
+		}
+
+		@Override
+		protected Void doInBackground(Void... voids) {
+
+			String responseString = null;
+
+			HttpClient httpClient = new DefaultHttpClient();
+			HttpPost httpPost = new HttpPost(UPLOAD_PICTURE_URL);
+
+			try{
+				AndroidMultiPartEntity entity = new AndroidMultiPartEntity(new AndroidMultiPartEntity.ProgressListener(){
+
+					@Override
+					public void transferred(long num) {
+
+					}
+				});
+
+				File sourceFile = new File(picturePath);
+				if (!imageUri.toString().equals("")){
+					entity.addPart("user_id", new StringBody(Long.toString(userId)) );
+					entity.addPart("image", new FileBody(sourceFile));
+
+					httpPost.setEntity(entity);
+
+					HttpResponse response = httpClient.execute(httpPost);
+					HttpEntity responseEntity = response.getEntity();
+					InputStream inputStream = responseEntity.getContent();
+					responseString = convertStreamToString(inputStream);
+					Log.e("HttpResponse", responseString);
+
+				}else{
+					Toast.makeText(getActivity(), "No image provided!", Toast.LENGTH_SHORT).show();
+				}
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			} catch (ClientProtocolException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			return null;
+		}
+
+		private String convertStreamToString(InputStream is) {
+
+			BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+			StringBuilder sb = new StringBuilder();
+
+			String line = null;
+			try {
+				while ((line = reader.readLine()) != null) {
+					sb.append(line + "\n");
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					is.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			return sb.toString();
+		}
 	}
 
 }
