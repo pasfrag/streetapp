@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:alpha="0.95"
-    android:background="@drawable/bg2nologo2"
-    android:orientation="vertical">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:alpha="0.95"
+              android:background="@drawable/bg2nologo2"
+              android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,10 +13,9 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/changepassword"
+            android:id="@+id/changepassword_tv"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="1"
             android:text="Change password"
             android:textSize="18sp" />
     </LinearLayout>
@@ -28,65 +26,16 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/pushnotifications"
+            android:id="@+id/change_email_tv"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="Push notifications"
+            android:text="Change E-mail"
             android:textSize="18sp" />
 
-        <Switch
-            android:id="@+id/pnswitch"
-            android:layout_width="wrap_content"
-            android:layout_height="38dp"
-            android:layout_weight="1" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/language"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="Language"
-            android:textSize="18sp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/deleteacount"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="Delete account"
-            android:textSize="18sp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/reportproblem"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="Report a problem"
-            android:textSize="18sp" />
     </LinearLayout>
 
     <ImageView
-        android:id="@+id/logosettings"
+        android:id="@+id/logosettings_iv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/logopink" />
