@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
@@ -50,6 +51,8 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.streetapp.Classes.HttpRequest;
+import com.streetapp.Classes.IImageCompressTaskListener;
+import com.streetapp.Classes.ImageCompressTask;
 import com.streetapp.Classes.Post;
 import com.streetapp.Classes.PostsAdapter;
 import com.streetapp.Classes.UploadPost;
@@ -66,6 +69,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
@@ -80,7 +85,7 @@ public class EventFragment extends Fragment implements OnMapReadyCallback{
 	private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
 	public static final int MEDIA_TYPE_IMAGE = 1;
 	private long eventId;
-	private TextView titleTV, descriptionTV, locationTV, attendTV, intererstTV, dateTV;
+	private TextView titleTV, descriptionTV, locationTV, attendTV, intererstTV, dateTV, voidTV;
 	private MapView eventMap;
 	private Button postBtn, interestBtn, attendBtn;
 	private RecyclerView postsRV;
@@ -93,7 +98,10 @@ public class EventFragment extends Fragment implements OnMapReadyCallback{
 	private ImageView postImage;
 	private PopupWindow popupWindow;
 	private RelativeLayout relativeLayout;
+	private String postText;
 	ArrayList<String> attend, interested;
+	private ImageCompressTask imageCompressTask;
+	private ExecutorService executorService = Executors.newFixedThreadPool(1);
 
 	public EventFragment() {
 		// Required empty public constructor
@@ -131,6 +139,7 @@ public class EventFragment extends Fragment implements OnMapReadyCallback{
 		postBtn = (Button) rootView.findViewById(R.id.event_post_action);
 		interestBtn = (Button) rootView.findViewById(R.id.yesbutnotsure);
 		attendBtn = (Button) rootView.findViewById(R.id.iwillgo);
+		voidTV = (TextView) rootView.findViewById(R.id.voidtextView2);
 
 		SharedPreferences preferences = this.getActivity().getBaseContext().getSharedPreferences("auth", Context.MODE_PRIVATE);
 		username = preferences.getString("username", "");
@@ -153,41 +162,45 @@ public class EventFragment extends Fragment implements OnMapReadyCallback{
 			@Override
 			public void onClick(View v) {
 
-				Response.Listener listener = new Response.Listener() {
-					@Override
-					public void onResponse(Object response) {
+				if (!attend.contains(username)) {
+					Response.Listener listener = new Response.Listener() {
+						@Override
+						public void onResponse(Object response) {
 
-						if (interested.contains(username)){
-							interested.remove(username);
-						}else {
-							interested.add(username);
+							if (interested.contains(username)) {
+								interested.remove(username);
+								interestBtn.setBackgroundColor(Color.GRAY);
+							} else {
+								interested.add(username);
+								interestBtn.setBackgroundColor(Color.GREEN);
+							}
+							intererstTV.setText(interested.size() + "are interested");
 						}
-						intererstTV.setText(interested.size() + "are interested");
-					}
-				};
+					};
 
-				Response.ErrorListener errorListener = new Response.ErrorListener() {
-					@Override
-					public void onErrorResponse(VolleyError error) {
+					Response.ErrorListener errorListener = new Response.ErrorListener() {
+						@Override
+						public void onErrorResponse(VolleyError error) {
 
-					}
-				};
+						}
+					};
 
-				final RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-				int socketTimeout = 30000;
-				final RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+					final RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+					int socketTimeout = 30000;
+					final RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
 
-				ArrayList<String> names = new ArrayList<>();
-				names.add("event_id");
-				names.add("user_id");
+					ArrayList<String> names = new ArrayList<>();
+					names.add("event_id");
+					names.add("user_id");
 
-				ArrayList<String> values = new ArrayList<>();
-				values.add(String.valueOf(eventId));
-				values.add(String.valueOf(userId));
+					ArrayList<String> values = new ArrayList<>();
+					values.add(String.valueOf(eventId));
+					values.add(String.valueOf(userId));
 
-				HttpRequest httpRequest = new HttpRequest(INTEREST_URL, listener, errorListener, names, values);
-				httpRequest.setRetryPolicy(policy);
-				requestQueue.add(httpRequest);
+					HttpRequest httpRequest = new HttpRequest(INTEREST_URL, listener, errorListener, names, values);
+					httpRequest.setRetryPolicy(policy);
+					requestQueue.add(httpRequest);
+				}
 			}
 		});
 
@@ -200,11 +213,18 @@ public class EventFragment extends Fragment implements OnMapReadyCallback{
 					public void onResponse(Object response) {
 
 						if (attend.contains(username)){
+							attendBtn.setBackgroundColor(Color.GRAY);
 							attend.remove(username);
 						}else {
+							attendBtn.setBackgroundColor(Color.GREEN);
 							attend.add(username);
+							if (interested.contains(username)){
+								interested.remove(username);
+								interestBtn.setBackgroundColor(Color.GRAY);
+								intererstTV.setText(interested.size() + " are interested");
+							}
 						}
-						attendTV.setText(attend.size() + "will go!");
+						attendTV.setText(attend.size() + " will go!");
 					}
 				};
 
@@ -268,6 +288,14 @@ public class EventFragment extends Fragment implements OnMapReadyCallback{
 
 						titleTV.setText(title);
 						descriptionTV.setText(description);
+						attendBtn.setBackgroundColor(Color.GRAY);
+						interestBtn.setBackgroundColor(Color.GRAY);
+						if (attend.contains(username)){
+							attendBtn.setBackgroundColor(Color.GREEN);
+							interested.remove(username);
+						}else if (interested.contains(username)){
+							interestBtn.setBackgroundColor(Color.GREEN);
+						}
 						attendTV.setText(attend.size() + " will attend.");
 						intererstTV.setText(interested.size() + "are interested");
 						android.text.format.DateFormat df = new android.text.format.DateFormat();
@@ -369,9 +397,11 @@ public class EventFragment extends Fragment implements OnMapReadyCallback{
 
 							JSONArray JSONcomments = JSONPost.getJSONArray("comments");
 							ArrayList<String> comments = new ArrayList<String>();
+							ArrayList<String> userComments = new ArrayList<>();
 							for (int j = 0; j < JSONcomments.length(); j++){
 								JSONObject commentData = JSONcomments.getJSONObject(j);
 								comments.add(commentData.getString("text"));
+								userComments.add(commentData.getString("username"));
 							}
 
 							if (pictureId.equals("") && location.equals("")){
@@ -393,7 +423,11 @@ public class EventFragment extends Fragment implements OnMapReadyCallback{
 									post = new Post(postId, userId, username, postText, timestamp, pictureId, tags, likes, comments, eventId);
 								}
 							}
+							post.setUserComments(userComments);
 							postsList.add(post);
+						}
+						if (postsList.size() == 0){
+							voidTV.setVisibility(View.VISIBLE);
 						}
 					}else{
 						Toast.makeText(getContext(),"There was some error in the server! " +
@@ -501,20 +535,23 @@ public class EventFragment extends Fragment implements OnMapReadyCallback{
 			@Override
 			public void onClick(View v) {
 				String text = textET.getText().toString();
+				postText = text;
 
 				if (!text.equals("")) {
 					String filePath = "";
+					String locationString = "";
 					if (fileUri != null) {
 						filePath = fileUri.getPath();
+
+						imageCompressTask = new ImageCompressTask(getActivity().getBaseContext(), filePath, iImageCompressTaskListener);
+						executorService.execute(imageCompressTask);
 					}
-					String locationString = "";
-					if (locationLL != null) {
+					else/*if (locationLL != null) */{
 						locationString = Double.toString(locationLL.latitude) + "|" +
 								Double.toString(locationLL.longitude);
+						new UploadPost(filePath, userId, locationString, eventId, text).execute();
 					}
 					Log.e("Edit text", text);
-					UploadPost uploadPost = new UploadPost(filePath, userId, locationString, eventId, text);
-					uploadPost.execute();
 					popupWindow.dismiss();
 				}
 				else {
@@ -617,6 +654,7 @@ public class EventFragment extends Fragment implements OnMapReadyCallback{
 	public void onMapReady(GoogleMap googleMap) {
 		MapsInitializer.initialize(getActivity().getBaseContext());
 
+		googleMap.getUiSettings().setAllGesturesEnabled(false);
 		googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
 		googleMap.addMarker(new MarkerOptions().position(locationLL));
@@ -624,4 +662,31 @@ public class EventFragment extends Fragment implements OnMapReadyCallback{
 		CameraPosition cameraPosition = CameraPosition.builder().target(locationLL).zoom(16).build();
 		googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 	}
+
+	private IImageCompressTaskListener iImageCompressTaskListener = new IImageCompressTaskListener() {
+		@Override
+		public void onComplete(List<File> compressed) {
+
+			File file = compressed.get(0);
+
+			new UploadPost(file.getAbsolutePath(), userId, "", eventId, postText).execute();
+
+		}
+
+		@Override
+		public void onError(Throwable error) {
+			Log.e("ImageCompressor", "Error occurred", error);
+		}
+	};
+
+	public void onDestroy(){
+
+		super.onDestroy();
+
+		executorService.shutdown();
+		executorService = null;
+		imageCompressTask = null;
+
+	}
+
 }

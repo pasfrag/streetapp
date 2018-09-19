@@ -28,6 +28,7 @@ import android.view.LayoutInflater;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -62,6 +63,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.streetapp.Classes.HttpRequest;
+import com.streetapp.Classes.IImageCompressTaskListener;
+import com.streetapp.Classes.ImageCompressTask;
 import com.streetapp.Classes.Post;
 import com.streetapp.Classes.PostsAdapter;
 import com.streetapp.Classes.UploadPost;
@@ -78,6 +81,9 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import android.view.Gravity;
 import android.view.View;
@@ -105,10 +111,13 @@ public class StartPageFragment extends Fragment implements GoogleApiClient.Conne
     private Uri fileUri;
     private ImageView postImage;
     private Location location;
+    private String postText;
+    private TextView voidTV;
 	private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
 	public static final int MEDIA_TYPE_IMAGE = 1;
 
-//	private OnFragmentInteractionListener mListener;
+	private ExecutorService executorService = Executors.newFixedThreadPool(1);
+	private ImageCompressTask imageCompressTask;
 
 	public StartPageFragment() {
 		// Required empty public constructor
@@ -129,7 +138,11 @@ public class StartPageFragment extends Fragment implements GoogleApiClient.Conne
 			fileUri = savedInstanceState.getParcelable("file_uri");
 		}
 
+		postText = "";
+
 		linearLayout = (LinearLayout) rootView.findViewById(R.id.action_buttons);
+
+		voidTV = (TextView) rootView.findViewById(R.id.voidtextView);
 
 		SharedPreferences preferences = this.getActivity().getBaseContext().getSharedPreferences("auth", Context.MODE_PRIVATE);
 		username = preferences.getString("username", "");
@@ -236,9 +249,11 @@ public class StartPageFragment extends Fragment implements GoogleApiClient.Conne
 
 							JSONArray JSONcomments = JSONPost.getJSONArray("comments");
 							ArrayList<String> comments = new ArrayList<String>();
+							ArrayList<String> userComments = new ArrayList<String>();
 							for (int j = 0; j < JSONcomments.length(); j++){
 								JSONObject commentData = JSONcomments.getJSONObject(j);
 								comments.add(commentData.getString("text"));
+								userComments.add(commentData.getString("username"));
 							}
 
 							if (pictureId.equals("") && location.equals("")){
@@ -260,7 +275,11 @@ public class StartPageFragment extends Fragment implements GoogleApiClient.Conne
 									post = new Post(postId, userId, username, postText, timestamp, pictureId, tags, likes, comments, eventId);
 								}
 							}
+							post.setUserComments(userComments);
 							postsList.add(post);
+						}
+						if (postsList.size() == 0 ){
+							voidTV.setVisibility(View.VISIBLE);
 						}
 					}else{
 						Toast.makeText(getContext(),"There was some error in the server! " +
@@ -382,21 +401,38 @@ public class StartPageFragment extends Fragment implements GoogleApiClient.Conne
 			@Override
 			public void onClick(View v) {
 				String text = textET.getText().toString();
+				postText = text;
+				long timestamp = System.currentTimeMillis()/1000;
+
+				String locationString = "";
 
 				if (!text.equals("")) {
 					String filePath = "";
+					Post post;
 					if (fileUri != null) {
 						filePath = fileUri.getPath();
+						post = new Post((long )0, userId, username, text, timestamp, "", new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>());
+						Bitmap image = BitmapFactory.decodeFile(fileUri.getPath());
+						post.setPostImage(image);
+
+						imageCompressTask = new ImageCompressTask(getActivity().getBaseContext(), filePath, iImageCompressTaskListener);
+						executorService.execute(imageCompressTask);
+
 					}
-					String locationString = "";
-					if (location != null) {
+					else/*if (location != null) */{
 						locationString = Double.toString(location.getLatitude()) + "|" +
 								Double.toString(location.getLongitude());
+						post = new Post((long)0, userId, username, text, timestamp, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), locationString);
+						new UploadPost(filePath,userId, locationString, 0, text).execute();
 					}
 					Log.e("Edit text", text);
-					UploadPost uploadPost = new UploadPost(filePath,userId, locationString, 0, text);
-					uploadPost.execute();
+					//UploadPost uploadPost = new UploadPost(filePath,userId, locationString, 0, text);
+					//uploadPost.execute();
 					popupWindow.dismiss();
+
+					postsList.add(0, post);
+					//postsAdapter.notifyItemInserted(0);
+					postsAdapter.notifyDataSetChanged();
 				}
 				else {
 					Log.e("Edit text", "Empty");
@@ -694,6 +730,7 @@ public class StartPageFragment extends Fragment implements GoogleApiClient.Conne
 		MapsInitializer.initialize(getActivity().getBaseContext());
 
 		googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+		googleMap.getUiSettings().setAllGesturesEnabled(false);
 
 		LatLng latLng = new LatLng(this.location.getLatitude(), this.location.getLongitude());
 
@@ -701,6 +738,32 @@ public class StartPageFragment extends Fragment implements GoogleApiClient.Conne
 
 		CameraPosition cameraPosition = CameraPosition.builder().target(latLng).zoom(16).build();
 		googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+	}
+
+	private IImageCompressTaskListener iImageCompressTaskListener = new IImageCompressTaskListener() {
+		@Override
+		public void onComplete(List<File> compressed) {
+
+			File file = compressed.get(0);
+
+			new UploadPost(file.getAbsolutePath(), userId, "", 0, postText).execute();
+
+		}
+
+		@Override
+		public void onError(Throwable error) {
+			Log.e("ImageCompressor", "Error occurred", error);
+		}
+	};
+
+	public void onDestroy(){
+
+		super.onDestroy();
+
+		executorService.shutdown();
+		executorService = null;
+		imageCompressTask = null;
+
 	}
 
 }

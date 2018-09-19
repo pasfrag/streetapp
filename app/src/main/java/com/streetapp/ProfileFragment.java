@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -38,6 +39,8 @@ import com.android.volley.toolbox.Volley;
 import com.squareup.picasso.Picasso;
 import com.streetapp.Classes.AndroidMultiPartEntity;
 import com.streetapp.Classes.HttpRequest;
+import com.streetapp.Classes.IImageCompressTaskListener;
+import com.streetapp.Classes.ImageCompressTask;
 import com.streetapp.Classes.Post;
 import com.streetapp.Classes.PostsAdapter;
 import com.streetapp.Classes.UploadPost;
@@ -63,6 +66,10 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -78,7 +85,7 @@ public class ProfileFragment extends Fragment {
 	private static final String DESCRIPTION_URL = "http://sapp.000webhostapp.com/editdescription.php";
 	private static final String FOLLOW_URL = "http://sapp.000webhostapp.com/follow.php";
 	private static final String FAVOURITE_URL = "http://sapp.000webhostapp.com/favourite.php";
-	private TextView usernameTV, categoryTV, descriptionTV, followersTV, favouritesTV;
+	private TextView usernameTV, categoryTV, descriptionTV, followersTV, favouritesTV, voidTV;
 	private ImageView profileImageIV;
 	private EditText descriptionET;
 	private Button followBtn, favouriteBtn, sendDescriptionBtn;
@@ -95,6 +102,9 @@ public class ProfileFragment extends Fragment {
 
 	private static final int RESULT_LOAD_IMG = 200;
 	public static final int MEDIA_TYPE_IMAGE = 1;
+
+	private ExecutorService executorService = Executors.newFixedThreadPool(1);
+	private ImageCompressTask imageCompressTask;
 
 
 	public ProfileFragment() {
@@ -132,6 +142,7 @@ public class ProfileFragment extends Fragment {
 		followBtn = (Button) rootView.findViewById(R.id.profile_follow_bt);
 		favouriteBtn = (Button) rootView.findViewById(R.id.profile_favourite_bt);
 		sendDescriptionBtn = (Button) rootView.findViewById(R.id.action_description_btn);
+		voidTV = (TextView) rootView.findViewById(R.id.voidtextView3);
 
 		if (isCurrentUser()){
 			rootView.findViewById(R.id.profile_buttons).setVisibility(View.GONE);
@@ -220,12 +231,15 @@ public class ProfileFragment extends Fragment {
 						public void onResponse(String response) {
 							if (followers.contains(curUsername)){
 								followers.remove(curUsername);
+								followBtn.setBackgroundColor(Color.GRAY);
+								favourites.remove(curUsername);
+								favouriteBtn.setBackgroundColor(Color.GRAY);
 							}else {
 								followers.add(curUsername);
+								followBtn.setBackgroundColor(Color.GREEN);
 							}
-							followersTV.setText(followers.size() + " follow you");
-
-
+							followersTV.setText("Followed by " + followers.size());
+							favouritesTV.setText("Favourited by " + favourites.size());
 						}
 					};
 
@@ -252,37 +266,39 @@ public class ProfileFragment extends Fragment {
 			favouriteBtn.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					Response.Listener listener = new Response.Listener<String>() {
-						@Override
-						public void onResponse(String response) {
-							if (favourites.contains(curUsername)){
-								favourites.remove(curUsername);
-							}else {
-								favourites.add(curUsername);
+					if (followers.contains(curUsername)) {
+						Response.Listener listener = new Response.Listener<String>() {
+							@Override
+							public void onResponse(String response) {
+								if (favourites.contains(curUsername)) {
+									favourites.remove(curUsername);
+									favouriteBtn.setBackgroundColor(Color.GRAY);
+								} else {
+									favourites.add(curUsername);
+									favouriteBtn.setBackgroundColor(Color.GREEN);
+								}
+								favouritesTV.setText("Favourited by " + favourites.size());
 							}
-							favouritesTV.setText("Favourited by " + favourites.size());
+						};
 
+						Response.ErrorListener errorListener = new Response.ErrorListener() {
+							@Override
+							public void onErrorResponse(VolleyError error) {
+								error.printStackTrace();
+							}
+						};
 
-						}
-					};
+						ArrayList<String> names = new ArrayList<>();
+						ArrayList<String> values = new ArrayList<>();
 
-					Response.ErrorListener errorListener = new Response.ErrorListener() {
-						@Override
-						public void onErrorResponse(VolleyError error) {
-							error.printStackTrace();
-						}
-					};
+						names.add("follower_id");
+						names.add("following_id");
 
-					ArrayList<String> names = new ArrayList<>();
-					ArrayList<String> values = new ArrayList<>();
+						values.add(Long.toString(curUserId));
+						values.add(Long.toString(userId));
 
-					names.add("follower_id");
-					names.add("following_id");
-
-					values.add(Long.toString(curUserId));
-					values.add(Long.toString(userId));
-
-					sendRequest(FAVOURITE_URL, listener, errorListener, names, values);
+						sendRequest(FAVOURITE_URL, listener, errorListener, names, values);
+					}
 				}
 			});
 		}
@@ -307,6 +323,11 @@ public class ProfileFragment extends Fragment {
 	}
 
 	private void populateProfile(){
+
+		SharedPreferences preferences = getActivity().getBaseContext().getSharedPreferences("auth", Context.MODE_PRIVATE);
+		final long curUserId = preferences.getLong("user_id", 0);
+		final String curUsername = preferences.getString("username", "nouser");
+
 		Response.Listener listener = new Response.Listener<String>(){
 
 			@Override
@@ -322,11 +343,19 @@ public class ProfileFragment extends Fragment {
 						String description = "There is no description yet! Please add one";
 						if(!jsonData.isNull("description")){
 							description = jsonData.getString("description");
+						}else {
+							if(isCurrentUser()){
+								Toast.makeText(getActivity().getBaseContext(), "Long press on description to upload a new one!", Toast.LENGTH_LONG).show();
+							}
 						}
 						descriptionTV.setText(description);
 
 						if (!jsonData.isNull("picture_id")){
 							downloadProfileImage(jsonData.getString("picture_id"));
+						}else{
+							if (isCurrentUser()){
+								Toast.makeText(getActivity().getBaseContext(), "Long press on picture to upload a new one!", Toast.LENGTH_LONG).show();
+							}
 						}
 
 						JSONArray followersArray = jsonData.getJSONArray("followers");
@@ -339,8 +368,16 @@ public class ProfileFragment extends Fragment {
 							favourites.add(favouritesArray.getString(i));
 						}
 
-						followersTV.setText(followers.size() + " follow you");
+						followersTV.setText("Followed by " + followers.size());
 						favouritesTV.setText("Favourited by " + favourites.size());
+						favouriteBtn.setBackgroundColor(Color.GRAY);
+						followBtn.setBackgroundColor(Color.GRAY);
+						if (!isCurrentUser() && followers.contains(curUsername)){
+							followBtn.setBackgroundColor(Color.GREEN);
+							if (favourites.contains(curUsername)){
+								favouriteBtn.setBackgroundColor(Color.GREEN);
+							}
+						}
 
 					}
 				} catch (JSONException e) {
@@ -412,9 +449,11 @@ public class ProfileFragment extends Fragment {
 
 							JSONArray JSONcomments = JSONPost.getJSONArray("comments");
 							ArrayList<String> comments = new ArrayList<String>();
+							ArrayList<String> userComments = new ArrayList<>();
 							for (int j = 0; j < JSONcomments.length(); j++){
 								JSONObject commentData = JSONcomments.getJSONObject(j);
 								comments.add(commentData.getString("text"));
+								userComments.add(commentData.getString("username"));
 							}
 
 							if (pictureId.equals("") && location.equals("")){
@@ -436,7 +475,11 @@ public class ProfileFragment extends Fragment {
 									post = new Post(postId, userId, username, postText, timestamp, pictureId, tags, likes, comments, eventId);
 								}
 							}
+							post.setUserComments(userComments);
 							postsList.add(post);
+						}
+						if (postsList.size() == 0){
+							voidTV.setVisibility(View.VISIBLE);
 						}
 					}else{
 						Toast.makeText(getContext(),"There was some error in the server! " +
@@ -522,7 +565,9 @@ public class ProfileFragment extends Fragment {
 				final InputStream imageStream = getActivity().getContentResolver().openInputStream(imageUri);
 				final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
 				profileImageIV.setImageBitmap(selectedImage);
-				new UpdateProfilePic().execute();
+				//new UpdateProfilePic().execute();
+				imageCompressTask = new ImageCompressTask(getActivity().getBaseContext(), picturePath, iImageCompressTaskListener);
+				executorService.execute(imageCompressTask);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}
@@ -547,6 +592,32 @@ public class ProfileFragment extends Fragment {
 			result = "Not found";
 		}
 		return result;
+	}
+
+	private IImageCompressTaskListener iImageCompressTaskListener = new IImageCompressTaskListener() {
+		@Override
+		public void onComplete(List<File> compressed) {
+
+			File file = compressed.get(0);
+
+			picturePath = file.getAbsolutePath();
+			new UpdateProfilePic().execute();
+		}
+
+		@Override
+		public void onError(Throwable error) {
+			Log.e("ImageCompressor", "Error occurred", error);
+		}
+	};
+
+	public void onDestroy(){
+
+		super.onDestroy();
+
+		executorService.shutdown();
+		executorService = null;
+		imageCompressTask = null;
+
 	}
 
 	private class UpdateProfilePic extends AsyncTask<Void, Void, Void>{

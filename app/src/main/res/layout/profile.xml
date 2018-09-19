@@ -74,12 +74,15 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/profile_followers_tv"/>
+                android:id="@+id/profile_followers_tv"
+                android:textSize="18sp"
+                android:layout_marginRight="5dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/profile_favourites_tv"/>
+                android:id="@+id/profile_favourites_tv"
+                android:textSize="18sp"/>
 
         </LinearLayout>
 
@@ -123,6 +126,7 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 android:id="@+id/action_description_btn"/>
 
         </LinearLayout>
@@ -148,6 +152,13 @@
                 android:text="Favourite" />
 
         </LinearLayout>
+
+        <TextView
+        android:id="@+id/voidtextView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="There are no posts yet."
+        android:visibility="gone"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/profile_posts_rv"

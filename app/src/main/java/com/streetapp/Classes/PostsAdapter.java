@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.RequestQueue;
@@ -45,8 +47,6 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.MyViewHolder
 	private ArrayList<Post> postsList;
 	private Context context;
 	private GoogleMap mGoogleMap;
-	private VolleySingleton volleySingleton;
-	private ImageLoader imageLoader;
 	private static final String IMAGE_URL = "http://sapp.000webhostapp.com/getimage.php";
 	private static final String LIKE_REQUEST_URL = "https://sapp.000webhostapp.com/like.php";
 	private static final String COMMENT_REQUEST_URL = "https://sapp.000webhostapp.com/comment.php";
@@ -54,8 +54,6 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.MyViewHolder
 	public PostsAdapter(Context context){
 		this.postsList = new ArrayList<Post>();
 		this.context = context;
-		volleySingleton = VolleySingleton.getInstance(context);
-		imageLoader = volleySingleton.getImageLoader();
 	}
 
 	public void setPostsList(ArrayList<Post> postsList){
@@ -87,36 +85,25 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.MyViewHolder
 
 		holder.pTextTV.setText(post.getPostText());
 
+		SharedPreferences preferences = context.getSharedPreferences("auth", Context.MODE_PRIVATE);
+		String username = preferences.getString("username", "");
+		if (post.getLikes().contains(username)) {
+			holder.loveItButton.setBackgroundColor(Color.RED);
+		}else {
+			holder.loveItButton.setBackgroundColor(Color.GRAY);
+		}
+
 		if (post.isHasLocation()){
 			holder.imageLL.setVisibility(View.GONE);
 			holder.pImageView.setVisibility(View.GONE);
 			holder.mapLL.setVisibility(View.VISIBLE);
 			holder.addTheMarker(post);
 		}else{
-
-		//if (post.isHasImage()){
 			if (post.getPostImage() == null) {
 				Uri builtUri = Uri.parse(IMAGE_URL).buildUpon()
 						.appendQueryParameter("user_id", String.valueOf(post.getPostUserId()))
 						.appendQueryParameter("image", post.getPostImageName())
 						.build();
-				Log.e("image_post1", post.getPostUsername() + " " + post.getPostId());
-				/*imageLoader.get(builtUri.toString(), new ImageLoader.ImageListener() {
-					@Override
-					public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-						post.setPostImage(response.getBitmap());
-						holder.mapLL.setVisibility(View.GONE);
-						holder.mapView.setVisibility(View.GONE);
-						holder.pImageView.setImageBitmap(response.getBitmap());
-						holder.imageLL.setVisibility(View.VISIBLE);
-						Log.e("image_post2", post.getPostUsername() + " " + post.getPostId());
-					}
-
-					@Override
-					public void onErrorResponse(VolleyError error) {
-						Log.e("volley_image_error", error.getMessage() + " " + post.getPostId());
-					}
-				});*/
 				Picasso.get()
 						.load(builtUri.toString())
 						.into(holder.pImageView);
@@ -154,13 +141,16 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.MyViewHolder
 			}
 		});
 
-		ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context,
-				android.R.layout.simple_list_item_1, post.getComments());
-		holder.commentsLV.setAdapter(arrayAdapter);
+		ArrayList<String> comments = post.getComments();
+		ArrayList<String> usernames = post.getUserComments();
+
+		CommentAdapter commentAdapter = new CommentAdapter(context, R.layout.comments,
+				comments, usernames);
+		//ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context,
+		//		android.R.layout.simple_list_item_1, post.getComments());
+		holder.commentsLV.setAdapter(commentAdapter);
 
 	}
-
-
 
 	@Override
 	public int getItemCount() {
@@ -216,6 +206,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.MyViewHolder
 
 			SharedPreferences preferences = context.getSharedPreferences("auth", Context.MODE_PRIVATE);
 			long userId = preferences.getLong("user_id", 0);
+			String username = preferences.getString("username", "");
 
 			ArrayList<String> names = new ArrayList<>();
 			names.add("post_id");
@@ -248,17 +239,21 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.MyViewHolder
 			queue.add(request);
 
 			post.addToComments(text);
-			ArrayAdapter adapter = (ArrayAdapter) viewHolder.commentsLV.getAdapter();
+			post.addToUserComments(username);
+			CommentAdapter adapter = (CommentAdapter) viewHolder.commentsLV.getAdapter();
 			adapter.notifyDataSetChanged();
+
+			viewHolder.commentET.setText("");
+			Toast.makeText(context, "Comment uploaded!", Toast.LENGTH_LONG).show();
 		}else {
-			Log.e("false_comment","nothing to show");
+			Toast.makeText(context, "You can't live an empty comment!", Toast.LENGTH_LONG).show();
 		}
 	}
 
 	public class MyViewHolder extends RecyclerView.ViewHolder implements OnMapReadyCallback{
 
 		TextView pTimeTV, pInfoTV, pTextTV, likesTV;
-		Spinner toolsSp;
+		//Spinner toolsSp;
 		MapView mapView;
 		ImageView pImageView;
 		Button loveItButton, commentButton;
@@ -275,7 +270,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.MyViewHolder
 			pInfoTV = (TextView) itemView.findViewById(R.id.postinfo);
 			pTextTV = (TextView) itemView.findViewById(R.id.posttext);
 			likesTV = (TextView) itemView.findViewById(R.id.likesTV);
-			toolsSp = (Spinner) itemView.findViewById(R.id.tools);
+			//toolsSp = (Spinner) itemView.findViewById(R.id.tools);
 			mapView = (MapView) itemView.findViewById(R.id.mapView);
 			pImageView = (ImageView) itemView.findViewById(R.id.photoupload);
 			loveItButton = (Button) itemView.findViewById(R.id.loveit);
@@ -297,6 +292,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.MyViewHolder
 		public void onMapReady(GoogleMap googleMap) {
 			MapsInitializer.initialize(context);
 
+			googleMap.getUiSettings().setAllGesturesEnabled(false);
 			mGoogleMap = googleMap;
 			googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 

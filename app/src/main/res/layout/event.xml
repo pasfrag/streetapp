@@ -17,7 +17,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="37dp"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <TextView
@@ -30,7 +30,7 @@
             <TextView
                 android:id="@+id/evtitle"
                 android:layout_width="284dp"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textSize="18sp" />
         </LinearLayout>
@@ -42,7 +42,7 @@
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Description:"
                 android:textSize="18sp" />
@@ -50,18 +50,19 @@
             <TextView
                 android:id="@+id/evdescription"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textSize="18sp" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Date:"
                 android:textSize="18sp" />
@@ -69,7 +70,7 @@
             <TextView
                 android:id="@+id/evdate"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textSize="18sp" />
 
@@ -77,8 +78,8 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -109,43 +110,49 @@
             <TextView
                 android:id="@+id/attendTV"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:layout_marginRight="5dp"/>
 
             <TextView
                 android:id="@+id/interestedTV"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"/>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:gravity="center_horizontal">
 
             <Button
                 android:id="@+id/iwillgo"
-                android:layout_width="152dp"
+                android:layout_width="wrap_content"
                 android:layout_height="67dp"
-                android:layout_weight="1"
+                android:layout_marginRight="5dp"
                 android:text="I will go! " />
 
             <Button
                 android:id="@+id/yesbutnotsure"
                 android:layout_width="wrap_content"
                 android:layout_height="67dp"
-                android:layout_weight="1"
+                android:layout_marginLeft="5dp"
                 android:text="yes but not sure" />
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/voidtextView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="There are no posts yet. Make the first one!"
+            android:visibility="gone"/>
 
         <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/event_posts_RV"/>
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/action_post"/>
 
     </LinearLayout>
 

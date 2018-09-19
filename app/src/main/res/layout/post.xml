@@ -7,15 +7,13 @@
     android:alpha="0.95"
     android:background="@android:color/background_light"
     android:orientation="vertical"
-    android:layout_margin="5dp"
-    >
+    android:layout_margin="5dp">
 
     <TextView
         android:id="@+id/posttime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="8/7/2018 at 19:04" />
+        android:layout_gravity="center_horizontal"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -27,15 +25,15 @@
             android:layout_width="228dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.25"
-            android:text="Jakis has just shared a new photo!"
             android:textColor="@color/colorPrimaryDark"
             android:textStyle="bold" />
 
-        <Spinner
+        <!--Spinner
             android:id="@+id/tools"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0.25" />
+            android:layout_weight="0.25"
+            android:entries="@array/post_spinner_array"/-->
 
     </LinearLayout>
 
@@ -49,7 +47,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0"
-            android:text="Watch me Rocking in Time Sqare starting at 22:00"
             android:textColor="@android:color/background_dark"
             android:textStyle="bold" />
 
@@ -57,8 +54,8 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="170dp"
-        android:layout_marginBottom="-40dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
         android:orientation="horizontal"
         android:visibility="gone"
         android:id="@+id/map_ll">
@@ -66,7 +63,7 @@
         <com.google.android.gms.maps.MapView
             android:id="@+id/mapView"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="250dp"
             android:layout_weight="1"
             android:visibility="visible"/>
     </LinearLayout>
@@ -74,42 +71,33 @@
     <LinearLayout
 
         android:layout_width="match_parent"
-        android:layout_height="184dp"
-        android:layout_marginBottom="-40dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
         android:orientation="horizontal"
         android:visibility="gone"
         android:id="@+id/image_ll">
 
         <ImageView
             android:id="@+id/photoupload"
-            android:layout_width="wrap_content"
-            android:layout_height="280dp"
-            android:layout_marginBottom="80dp"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
             android:visibility="visible"
+            android:layout_gravity="center_horizontal"
             app:srcCompat="@drawable/streetart1"/>
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="51dp"
-        android:gravity="center_horizontal">
+        android:layout_height="wrap_content">
 
 
         <Button
             android:id="@+id/loveit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="50dp"
             android:text="Love it!"
-            android:textAllCaps="false" />
-
-        <Button
-            android:id="@+id/comment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Comment"
-            android:textAllCaps="false" />
+            android:textAllCaps="false"/>
 
     </LinearLayout>
 
@@ -153,11 +141,11 @@
     <LinearLayout
 
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <ListView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:id="@+id/comment_list"/>
     </LinearLayout>
 

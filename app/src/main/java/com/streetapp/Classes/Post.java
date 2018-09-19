@@ -18,6 +18,7 @@ public class Post {
 	private ArrayList<String> tags;
 	private ArrayList<String> likes;
 	private ArrayList<String> comments;
+	private ArrayList<String> userComments;
 	private long eventId;
 	private boolean hasImage;
 	private boolean hasLocation;
@@ -32,6 +33,7 @@ public class Post {
 		this.tags = tags;
 		this.likes = likes;
 		this.comments = comments;
+		this.userComments = new ArrayList<>();
 		this.hasImage = false;
 		this.hasLocation = false;
 		this.hasEventId = false;
@@ -47,6 +49,7 @@ public class Post {
 		this.likes = likes;
 		this.comments = comments;
 		this.eventId = eventId;
+		this.userComments = new ArrayList<>();
 		this.hasImage = false;
 		this.hasLocation = false;
 		this.hasEventId = true;
@@ -62,6 +65,7 @@ public class Post {
 		this.likes = likes;
 		this.comments = comments;
 		this.location = location;
+		this.userComments = new ArrayList<>();
 		this.hasImage = false;
 		this.hasLocation = true;
 		this.hasEventId = false;
@@ -78,6 +82,7 @@ public class Post {
 		this.comments = comments;
 		this.location = location;
 		this.eventId = eventId;
+		this.userComments = new ArrayList<>();
 		this.hasImage = false;
 		this.hasLocation = true;
 		this.hasEventId = true;
@@ -93,6 +98,7 @@ public class Post {
 		this.tags = tags;
 		this.likes = likes;
 		this.comments = comments;
+		this.userComments = new ArrayList<>();
 		this.image = null;
 		this.hasImage = true;
 		this.hasLocation = false;
@@ -110,6 +116,7 @@ public class Post {
 		this.likes = likes;
 		this.comments = comments;
 		this.eventId = eventId;
+		this.userComments = new ArrayList<>();
 		this.image = null;
 		this.hasImage = true;
 		this.hasLocation = false;
@@ -202,5 +209,18 @@ public class Post {
 
 	public void addToComments(String comment){
 		comments.add(comment);
+	}
+
+	public void addToUserComments(String username){
+		userComments.add(username);
+	}
+
+	public void setUserComments(ArrayList<String> userComments){
+		for (int i = 0; i < userComments.size(); i++)
+		this.userComments.add(userComments.get(i));
+	}
+
+	public ArrayList<String> getUserComments(){
+		return this.userComments;
 	}
 }

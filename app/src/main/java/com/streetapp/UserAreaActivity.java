@@ -51,6 +51,7 @@ public class UserAreaActivity extends AppCompatActivity {
 	private MyArrayAdapter<String> arrayAdapter;
 	private long userId;
 	private String username;
+	private int category;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +62,7 @@ public class UserAreaActivity extends AppCompatActivity {
 		SharedPreferences preferences = this.getSharedPreferences("auth", Context.MODE_PRIVATE);
 		username = preferences.getString("username", "");
 		userId = preferences.getLong("user_id", 0);
+		category = preferences.getInt("category", 0);
 
 		Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
 		setSupportActionBar(toolbar);
@@ -198,6 +200,10 @@ public class UserAreaActivity extends AppCompatActivity {
 		navigationView = (NavigationView) findViewById(R.id.nav_view);
 		navigationView.getMenu().getItem(0).setChecked(true);
 
+		if (category == 0) {
+			navigationView.inflateMenu(R.menu.drawer_view_simple);
+		}
+
 		navigationView.setNavigationItemSelectedListener(
 				new NavigationView.OnNavigationItemSelectedListener() {
 					@Override
@@ -249,14 +255,6 @@ public class UserAreaActivity extends AppCompatActivity {
 							case R.id.map_page:
 								searchACTV.setVisibility(View.GONE);
 								fragment = new CloseMapFragment();
-								transaction
-										.replace(R.id.fragment_container, fragment)
-										.addToBackStack(null)
-										.commit();
-								return true;
-							case R.id.about_page:
-								searchACTV.setVisibility(View.GONE);
-								fragment = new AboutSappFragment();
 								transaction
 										.replace(R.id.fragment_container, fragment)
 										.addToBackStack(null)

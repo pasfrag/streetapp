@@ -7,11 +7,6 @@
             android:title="Main Page"/>
 
         <item
-            android:id="@+id/profile"
-            android:title="Profile"
-            android:icon="@drawable/ic_person_black_24dp"/>
-
-        <item
             android:id="@+id/map_page"
             android:title="Close me"
             android:icon="@drawable/ic_place_black_24dp"/>

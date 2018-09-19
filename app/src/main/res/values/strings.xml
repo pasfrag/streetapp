@@ -21,7 +21,6 @@
         <item>Street Food</item>
         <item>Parkour</item>
         <item>Juggler</item>
-        <item></item>
     </string-array>
 
     <string-array name="category_value_array">
@@ -35,7 +34,10 @@
         <item>7</item>
         <item>8</item>
         <item>9</item>
-        <item>10</item>
+    </string-array>
+
+    <string-array name="post_spinner_array">
+        <item>Delete</item>
     </string-array>
 
     <!-- TODO: Remove or change this placeholder text -->

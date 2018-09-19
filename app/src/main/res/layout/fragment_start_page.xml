@@ -3,6 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:alpha="0.95">
+
+    <TextView
+        android:id="@+id/voidtextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Seems you have not followed an artist yet. Please go up and try to search Artists or Events on the Search bar!"
+        android:visibility="gone"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
