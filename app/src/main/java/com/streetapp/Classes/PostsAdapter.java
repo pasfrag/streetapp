@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,6 +44,8 @@ import com.squareup.picasso.Picasso;
 import com.streetapp.R;
 
 import java.util.ArrayList;
+
+import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.MyViewHolder> {
 
@@ -138,6 +143,13 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.MyViewHolder
 					//send comment
 					commentPressed(holder, holder.getAdapterPosition());
 				}
+			}
+		});
+
+		holder.allCommentsButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				allCommentsPressed(post, holder);
 			}
 		});
 
@@ -250,13 +262,35 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.MyViewHolder
 		}
 	}
 
+	public void allCommentsPressed(Post post, MyViewHolder holder){
+
+		if (post.getComments().size()>0) {
+			LayoutInflater layoutInflater = (LayoutInflater) context
+					.getSystemService(LAYOUT_INFLATER_SERVICE);
+
+			final View popupView = layoutInflater.inflate(R.layout.all_comments, null);
+			PopupWindow popupWindow = new PopupWindow(popupView, RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+			popupWindow.setFocusable(true);
+			if (post.getComments().size()>5){
+				popupWindow.setHeight(600);
+			}
+			popupWindow.update();
+
+			ListView listView = (ListView) popupView.findViewById(R.id.comment_all_list);
+			CommentAdapter commentAdapter = new CommentAdapter(context, R.layout.comments, post.getComments(), post.getUserComments());
+			listView.setAdapter(commentAdapter);
+
+			popupWindow.showAtLocation(holder.mapLL, Gravity.CENTER, 0, 0);
+		}
+	}
+
 	public class MyViewHolder extends RecyclerView.ViewHolder implements OnMapReadyCallback{
 
 		TextView pTimeTV, pInfoTV, pTextTV, likesTV;
 		//Spinner toolsSp;
 		MapView mapView;
 		ImageView pImageView;
-		Button loveItButton, commentButton;
+		Button loveItButton, commentButton, allCommentsButton;
 		EditText commentET;
 		ListView commentsLV;
 		LinearLayout mapLL, imageLL;
@@ -275,6 +309,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.MyViewHolder
 			pImageView = (ImageView) itemView.findViewById(R.id.photoupload);
 			loveItButton = (Button) itemView.findViewById(R.id.loveit);
 			commentButton = (Button) itemView.findViewById(R.id.comment_send);
+			allCommentsButton = (Button) itemView.findViewById(R.id.comment_btn);
 			commentET = (EditText) itemView.findViewById(R.id.commit_et);
 			commentsLV = (ListView) itemView.findViewById(R.id.comment_list);
 			mapLL = (LinearLayout) itemView.findViewById(R.id.map_ll);
