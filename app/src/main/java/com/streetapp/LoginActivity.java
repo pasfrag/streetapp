@@ -24,6 +24,7 @@ import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.streetapp.Classes.HttpRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -64,6 +65,7 @@ public class LoginActivity extends Activity {
 				final String email = emailET.getText().toString();
 				if (email.equals("")){
 					emailET.setError("This field cannot be blank!");
+                    flag = false;
 				}
 
 				if (!flag){
@@ -94,17 +96,30 @@ public class LoginActivity extends Activity {
 							int code = jsonResponse.getInt("code");
 
 							if (code == 200){
+								SharedPreferences preferences = LoginActivity.this.getSharedPreferences("auth", Context.MODE_PRIVATE);
+								SharedPreferences.Editor editor = preferences.edit();
+
+								long id = jsonResponse.getLong("id");
+								editor.putLong("user_id", id);
+
+								String username = jsonResponse.getString("username");
+								editor.putString("username", username);
+
+								String email = jsonResponse.getString("email");
+								editor.putString("email", email);
+
+								int category = jsonResponse.getInt("category");
+								editor.putInt("category", category);
 
 								Boolean flag = jsonResponse.getBoolean("rememberme_exists");
 
 								if (flag) {
-									SharedPreferences preferences = LoginActivity.this.getSharedPreferences("auth", Context.MODE_PRIVATE);
-									SharedPreferences.Editor editor = preferences.edit();
 
 									String auth = jsonResponse.getString("auth");
 									editor.putString("remember_me_auth", auth);
-									editor.apply();
 								}
+
+								editor.apply();
 
 								Intent intent = new Intent(LoginActivity.this, UserAreaActivity.class);
 								LoginActivity.this.startActivity(intent);
